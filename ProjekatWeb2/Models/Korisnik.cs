@@ -16,6 +16,7 @@ namespace ProjekatWeb2.Models
         public DateTime DatumRodjenja { get; set; }
         public string Slika { get; set; }
         public TipKorisnika TipKorisnika { get; set; }
+        public double CijenaDostave { get; set; }
         public VerifikacijaProdavca VerifikacijaProdavca { get; set; }
         public List<Porudzbina> Porudzbine { get; set; }
         public List<Artikal> ArtikliProdavac { get; set; }

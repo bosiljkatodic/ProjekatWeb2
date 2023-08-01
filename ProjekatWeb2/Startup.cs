@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ProjekatWeb2.Infrastructure;
+using ProjekatWeb2.Mapping;
+using System.Text;
 
 namespace ProjekatWeb2
 {
@@ -23,22 +27,62 @@ namespace ProjekatWeb2
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProjekatWeb2", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "bearer"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            }
+                        },
+                        new string[]{}
+                    }
+                });
             });
 
-           // services.AddScoped<IStudentService, StudentService>();
+            //tokeni
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                    {
+                        ValidIssuer = Configuration["ValidIssuer"],
+                        ValidateIssuer = true,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ClockSkew = TimeSpan.Zero, //ovo u stvari proverava da li je isteklo vazenje tokena
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))
+                    };
+                });
+
+
+            // services.AddScoped<IStudentService, StudentService>();
 
             //registracija db contexta u kontejneru zavisnosti, njegov zivotni vek je Scoped
             services.AddDbContext<OnlineProdavnicaDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("OnlineProdavnicaDB")));
             
             //Registracija mapera u kontejneru, zivotni vek singleton
-            /*var mapperConfig = new MapperConfiguration(mc =>
+            var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());
             });
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
-            */
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +99,7 @@ namespace ProjekatWeb2
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
