@@ -10,7 +10,7 @@ using ProjekatWeb2.Models;
 
 namespace ProjekatWeb2.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/orders")]
     [ApiController]
     public class PorudzbinaController : ControllerBase
     {

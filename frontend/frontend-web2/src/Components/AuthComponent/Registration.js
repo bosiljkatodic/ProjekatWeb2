@@ -145,6 +145,17 @@ export default function Registration() {
                 />
               </Grid>
               <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password2"
+                  label="Ponovi lozinku"
+                  type="password"
+                  id="password2"
+                  autoComplete="new-password"
+                />
+              </Grid>
+              <Grid item xs={12}>
                 <UserImage slika={slika} setSlika={setSlika}></UserImage>   
                 {error && slika.length === 0 ? <div className="ui pointing red basic label">Morate odabrati sliku</div> : null} 
               </Grid> 
