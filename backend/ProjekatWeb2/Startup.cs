@@ -5,13 +5,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ProjekatWeb2.Infrastructure;
+using ProjekatWeb2.Interfaces;
 using ProjekatWeb2.Mapping;
+using ProjekatWeb2.Services;
 using System.Text;
 
 namespace ProjekatWeb2
 {
     public class Startup
     {
+        private readonly string _cors = "cors";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -27,6 +30,7 @@ namespace ProjekatWeb2
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProjekatWeb2", Version = "v1" });
+                //Ovo dodajemo kako bi mogli da unesemo token u swagger prilikom testiranja
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -53,23 +57,40 @@ namespace ProjekatWeb2
             });
 
             //tokeni
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+            //Dodajemo semu autentifikacije i podesavamo da se radi o JWT beareru
+            services.AddAuthentication(opt => {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                    options.TokenValidationParameters = new TokenValidationParameters()
                     {
                         ValidIssuer = Configuration["ValidIssuer"],
                         ValidateIssuer = true,
                         ValidateAudience = false,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ClockSkew = TimeSpan.Zero, //ovo u stvari proverava da li je isteklo vazenje tokena
+                        ClockSkew = TimeSpan.Zero, //ovo provjerava da li je isteklo vazenje tokena
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))
                     };
+             });
+
+            //mehanizam kojim server specificira kojim domenima dozvoljava da ga kontaktiraju
+            services.AddCors(options =>
+            {
+                var reactApp = Configuration["ReactApp"];
+                options.AddPolicy(name: _cors, builder =>
+                {
+                    builder.WithOrigins(reactApp)
+                           .AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .AllowCredentials();
                 });
+            });
 
-
-            // services.AddScoped<IStudentService, StudentService>();
+            
+            services.AddScoped<IKorisnikService, KorisnikService>();
 
             //registracija db contexta u kontejneru zavisnosti, njegov zivotni vek je Scoped
             services.AddDbContext<OnlineProdavnicaDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("OnlineProdavnicaDB")));
@@ -96,6 +117,8 @@ namespace ProjekatWeb2
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors(_cors);
 
             app.UseRouting();
 
