@@ -6,6 +6,8 @@ using ProjekatWeb2.Enumerations;
 using ProjekatWeb2.Infrastructure;
 using ProjekatWeb2.Interfaces;
 using ProjekatWeb2.Models;
+using ProjekatWeb2.Repository;
+using ProjekatWeb2.Repository.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -15,13 +17,13 @@ namespace ProjekatWeb2.Services
     public class KorisnikService : IKorisnikService
     {
         private readonly IMapper _mapper;
-        private readonly OnlineProdavnicaDbContext _dbContext;
+        private readonly IKorisnikRepozitorijum _korisnikRepozitorijum;
         private readonly IConfigurationSection _secretKey;
 
-        public KorisnikService(IMapper mapper, OnlineProdavnicaDbContext dbContext, IConfiguration configuration)
+        public KorisnikService(IKorisnikRepozitorijum korisnikRepozitorijum, IMapper mapper, OnlineProdavnicaDbContext dbContext, IConfiguration configuration)
         {
+            _korisnikRepozitorijum = korisnikRepozitorijum;
             _mapper = mapper;
-            _dbContext = dbContext;
             _secretKey = configuration.GetSection("SecretKey");
         }
 
@@ -29,9 +31,8 @@ namespace ProjekatWeb2.Services
         {
             Korisnik newKorisnik = _mapper.Map<Korisnik>(newKorisnikDto);
             newKorisnik.Lozinka = BCrypt.Net.BCrypt.HashPassword(newKorisnik.Lozinka);
-            _dbContext.Korisnici.Add(newKorisnik);
-            await _dbContext.SaveChangesAsync();
-
+            await _korisnikRepozitorijum.AddKorisnik(newKorisnik);
+        
             return _mapper.Map<KorisnikDto>(newKorisnik);
         }
         
@@ -44,7 +45,7 @@ namespace ProjekatWeb2.Services
             }
 
 
-            loginKorisnik = await _dbContext.Korisnici.FirstOrDefaultAsync(x => x.Email == loginKorisnikDto.Email);
+            loginKorisnik = await _korisnikRepozitorijum.GetKorisnikByEmail(loginKorisnikDto.Email);
 
             if (loginKorisnik == null)
                 return new IspisDto($"Korisnik sa emailom {loginKorisnikDto.Email} ne postoji");
@@ -87,9 +88,11 @@ namespace ProjekatWeb2.Services
         {
             if (string.IsNullOrEmpty(registerKorisnik.Email)) //ako nije unet email, baci gresku
                 return new IspisDto("Niste uneli email");
-            
-            if(_dbContext.Korisnici != null) {
-                foreach (Korisnik k in _dbContext.Korisnici)
+
+            var korisnici = await _korisnikRepozitorijum.GetAllKorisnici();
+
+            if (korisnici != null) {
+                foreach (Korisnik k in korisnici)
                 {
                     if (k.Email == registerKorisnik.Email)
                         return new IspisDto("Email vec postoji");
@@ -109,7 +112,7 @@ namespace ProjekatWeb2.Services
 
 
             if (!IsKorisnikFieldsValid(registerKorisnik)) //ako nisu validna polja onda nista
-                return new IspisDto("Ostala polja moraju biti validna");
+                return new IspisDto("Sva polja moraju biti validna");
 
             KorisnikDto registeredKorisnik = await AddKorisnik(registerKorisnik);
 
@@ -124,6 +127,8 @@ namespace ProjekatWeb2.Services
                 claims.Add(new Claim(ClaimTypes.Role, "kupac"));
             if (registerKorisnik.TipKorisnika == TipKorisnika.Prodavac)
                 claims.Add(new Claim(ClaimTypes.Role, "prodavac"));
+
+            //ENKRIPCIJA LOZINKE????
 
             SymmetricSecurityKey secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.Value));
             SigningCredentials signInCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
@@ -161,13 +166,110 @@ namespace ProjekatWeb2.Services
             return true;
         }
 
+        public static bool IsUpdateKorisnikFieldsValid(UpdateKorisnikDto korisnikDto)
+        {
+            if (string.IsNullOrEmpty(korisnikDto.KorisnickoIme))
+                return false;
+            if (string.IsNullOrEmpty(korisnikDto.Email))
+                return false;
+            if (string.IsNullOrEmpty(korisnikDto.Lozinka))
+                return false;
+            if (string.IsNullOrEmpty(korisnikDto.Ime))
+                return false;
+            if (string.IsNullOrEmpty(korisnikDto.Prezime))
+                return false;
+            if (korisnikDto.DatumRodjenja > DateTime.Now)
+                return false;
+            if (string.IsNullOrEmpty(korisnikDto.Adresa))
+                return false;
+
+
+            return true;
+        }
+
         public async Task<KorisnikDto> GetKorisnik(long id)
         {
             Korisnik korisnik = new Korisnik();
-            korisnik = await _dbContext.Korisnici.FindAsync(id);
+            korisnik = await _korisnikRepozitorijum.GetKorisnikById(id);
             KorisnikDto korisnikDto = _mapper.Map<KorisnikDto>(korisnik);
 
             return korisnikDto;
         }
+
+        public async Task<IEnumerable<KorisnikDto>> GetAllKorisnici()
+        {
+            var korisnici = await _korisnikRepozitorijum.GetAllKorisnici();
+            return _mapper.Map<List<KorisnikDto>>(korisnici);
+        }
+    
+
+        public async Task UpdateKorisnik(UpdateKorisnikDto korisnikDto)
+        {
+
+            if (korisnikDto.Lozinka.Length < 4)
+            {
+                throw new Exception("Lozinka mora sadržati najmanje 4 karaktera.");
+            }
+
+        
+            Korisnik korisnik = new Korisnik();
+            korisnik = await _korisnikRepozitorijum.GetKorisnikById(korisnikDto.Id);
+
+            if (korisnik == null)
+            {
+                throw new Exception("Korisnik ne postoji.");
+
+            }
+
+            var korisnici = await _korisnikRepozitorijum.GetAllKorisnici();
+
+            foreach (Korisnik k in korisnici)
+            {
+                if (korisnikDto.Email == k.Email)
+                    throw new Exception("Email vec postoji");
+            }
+
+            foreach (Korisnik k in korisnici)
+            {
+                if (korisnikDto.KorisnickoIme == k.KorisnickoIme)
+                    throw new Exception("Korisnicko ime vec postoji");
+            }
+
+            if (!IsUpdateKorisnikFieldsValid(korisnikDto))
+                throw new Exception("Sva polja moraju biti validna.");
+
+            korisnik.KorisnickoIme = korisnikDto.KorisnickoIme;
+            korisnik.Email = korisnikDto.Email;
+            korisnik.Ime = korisnikDto.Ime;
+            korisnik.Prezime = korisnikDto.Prezime;
+            korisnik.Lozinka = BCrypt.Net.BCrypt.HashPassword(korisnikDto.Lozinka);
+            korisnik.Adresa = korisnikDto.Adresa;
+            korisnik.Slika = korisnikDto.Slika;
+            korisnik.DatumRodjenja = korisnikDto.DatumRodjenja;
+
+
+            await _korisnikRepozitorijum.UpdateKorisnik(korisnik);
+            //mapiranje?
+    }
+
+        public async Task DeleteKorisnik(long id)
+        {
+            await _korisnikRepozitorijum.DeleteKorisnikById(id);
+        }
+
+        public async Task<List<KorisnikDto>> GetProdavci()
+        {
+            var prodavci = await _korisnikRepozitorijum.SviProdavci();
+            return _mapper.Map<List<KorisnikDto>>(prodavci);
+        }
+
+        public async Task<List<KorisnikDto>> VerifyProdavac(long id, string statusVerifikacije)
+        {
+            var prodavci = await _korisnikRepozitorijum.VerifikujProdavca(id, statusVerifikacije);
+
+            return _mapper.Map<List<KorisnikDto>>(prodavci);
+        }
+
     }
 }
+

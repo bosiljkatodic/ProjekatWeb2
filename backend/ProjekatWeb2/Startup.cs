@@ -7,6 +7,8 @@ using Microsoft.OpenApi.Models;
 using ProjekatWeb2.Infrastructure;
 using ProjekatWeb2.Interfaces;
 using ProjekatWeb2.Mapping;
+using ProjekatWeb2.Repository;
+using ProjekatWeb2.Repository.Interfaces;
 using ProjekatWeb2.Services;
 using System.Text;
 
@@ -89,12 +91,14 @@ namespace ProjekatWeb2
                 });
             });
 
-            
-            services.AddScoped<IKorisnikService, KorisnikService>();
 
             //registracija db contexta u kontejneru zavisnosti, njegov zivotni vek je Scoped
             services.AddDbContext<OnlineProdavnicaDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("OnlineProdavnicaDB")));
-            
+
+
+            services.AddScoped<IKorisnikRepozitorijum, KorisnikRepozitorijum>();
+            services.AddScoped<IKorisnikService, KorisnikService>();
+
             //Registracija mapera u kontejneru, zivotni vek singleton
             var mapperConfig = new MapperConfiguration(mc =>
             {

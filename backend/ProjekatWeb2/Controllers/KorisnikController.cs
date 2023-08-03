@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjekatWeb2.Dto;
 using ProjekatWeb2.Interfaces;
@@ -60,6 +61,61 @@ namespace ProjekatWeb2.Controllers
 
         }
 
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> AzuriranjeKorisnika(int id, [FromForm] UpdateKorisnikDto korisnikDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != korisnikDto.Id)
+            {
+                return BadRequest("Id korisnika se ne poklapa sa Id vrijednoscu u rutiranju.");
+            }
+
+            try
+            {
+                await _korisnikService.UpdateKorisnik(korisnikDto);
+                return Ok("Korisnik je azuriran.");
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest($"Greska prilikom azuriranja: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteKorisnik(long id)
+        {
+            await _korisnikService.DeleteKorisnik(id);
+            return Ok($"Korisnik sa id = {id} je uspesno obrisan.");
+        }
+
+        [HttpGet("getProdavci")]
+        //[Authorize(Roles = "administrator")]
+        public async Task<IActionResult> GetProdavci()
+        {
+            return Ok(await _korisnikService.GetProdavci());
+        }
+
+        [HttpPut("verifyProdavca/{id}")]
+        //[Authorize(Roles = "administrator")]
+        public async Task<IActionResult> VerifyProdavca(long id, [FromBody] string statusVerifikacije)
+        {
+            List<KorisnikDto> verifiedProdavci = await _korisnikService.VerifyProdavac(id, statusVerifikacije);
+            if (verifiedProdavci == null)
+            {
+                return BadRequest("Ne postoji prodavac");
+            }
+
+            //KorisnikDto prodavac = await _korisnikService.GetKorisnikById(id);
+            //_emailVerifyService.SendVerificationMail(prodavac.Email, statusVerifikacije);
+
+            return Ok(verifiedProdavci);
+        }
 
     }
 }
