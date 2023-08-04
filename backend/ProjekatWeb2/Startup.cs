@@ -98,6 +98,8 @@ namespace ProjekatWeb2
 
             services.AddScoped<IKorisnikRepozitorijum, KorisnikRepozitorijum>();
             services.AddScoped<IKorisnikService, KorisnikService>();
+            services.AddScoped<IArtikalRepozitorijum, ArtikalRepozitorijum>();
+            services.AddScoped<IArtikalService, ArtikalService>();
 
             //Registracija mapera u kontejneru, zivotni vek singleton
             var mapperConfig = new MapperConfiguration(mc =>

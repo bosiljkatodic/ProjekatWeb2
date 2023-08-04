@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProjekatWeb2.Dto;
 using ProjekatWeb2.Infrastructure;
+using ProjekatWeb2.Interfaces;
 using ProjekatWeb2.Models;
 
 namespace ProjekatWeb2.Controllers
@@ -14,111 +18,81 @@ namespace ProjekatWeb2.Controllers
     [ApiController]
     public class ArtikalController : ControllerBase
     {
-        private readonly OnlineProdavnicaDbContext _context;
+        private readonly IArtikalService _artikalService;
 
-        public ArtikalController(OnlineProdavnicaDbContext context)
+        public ArtikalController(IArtikalService artikalService)
         {
-            _context = context;
+            _artikalService = artikalService;
         }
 
-        // GET: api/Artikal
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Artikal>>> GetArtikli()
+        [HttpPost("addArtikal")]
+        //[Authorize(Roles = "prodavac")]
+        public async Task<IActionResult> AddArtikal([FromBody] ArtikalDto artikal)
         {
-          if (_context.Artikli == null)
-          {
-              return NotFound();
-          }
-            return await _context.Artikli.ToListAsync();
-        }
-
-        // GET: api/Artikal/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Artikal>> GetArtikal(long id)
-        {
-          if (_context.Artikli == null)
-          {
-              return NotFound();
-          }
-            var artikal = await _context.Artikli.FindAsync(id);
-
-            if (artikal == null)
+            ArtikalDto newArtikalDto = await _artikalService.AddArtikal(artikal);
+            if (newArtikalDto == null)
             {
-                return NotFound();
+                return BadRequest("Polja nisu dobro popunjena ili prodavac ne postoji");
             }
-
-            return artikal;
+            return Ok(newArtikalDto);
         }
 
-        // PUT: api/Artikal/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutArtikal(long id, Artikal artikal)
-        {
-            if (id != artikal.Id)
-            {
-                return BadRequest();
-            }
 
-            _context.Entry(artikal).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ArtikalExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Artikal
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Artikal>> PostArtikal(Artikal artikal)
-        {
-          if (_context.Artikli == null)
-          {
-              return Problem("Entity set 'OnlineProdavnicaDbContext.Artikli'  is null.");
-          }
-            _context.Artikli.Add(artikal);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetArtikal", new { id = artikal.Id }, artikal);
-        }
-
-        // DELETE: api/Artikal/5
         [HttpDelete("{id}")]
+        //[Authorize(Roles = "prodavac")]
         public async Task<IActionResult> DeleteArtikal(long id)
         {
-            if (_context.Artikli == null)
+            bool response = await _artikalService.DeleteArtikal(id);
+            if (!response)
             {
-                return NotFound();
+                return BadRequest("Artikal ne postoji ili nije uspesno obrisan");
             }
-            var artikal = await _context.Artikli.FindAsync(id);
+            return Ok($"Artikal id {id} je uspesno obrisan");
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetArtikli()
+        {
+            return Ok(await _artikalService.GetAllArtikals());
+        }
+
+        [HttpGet("{id}")]
+        //[Authorize(Roles = "prodavac")]
+        public async Task<IActionResult> GetArtikalById(long id) 
+        {
+            ArtikalDto artikal = await _artikalService.GetArtikalById(id);
             if (artikal == null)
             {
-                return NotFound();
+                return BadRequest("Artikal ne postoji");
             }
-
-            _context.Artikli.Remove(artikal);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok(artikal);
         }
 
-        private bool ArtikalExists(long id)
+        [HttpGet("getProdavceveArtikle/{id}")]
+        //[Authorize(Roles = "prodavac")]
+        public async Task<IActionResult> GetProdavceveArtikle(long id) 
         {
-            return (_context.Artikli?.Any(e => e.Id == id)).GetValueOrDefault();
+            List<ArtikalDto> prodavceviArtikli = await _artikalService.GetProdavceveArtikle(id);
+            if (prodavceviArtikli == null)
+            {
+                return BadRequest("Korisnik ne postoji");
+            }
+            return Ok(prodavceviArtikli);
         }
+
+
+        [HttpPut("{id}")]
+        //[Authorize(Roles = "prodavac")]
+        public async Task<IActionResult> ChangeArtikal(long id, [FromBody] ArtikalDto artikal)
+        {
+            ArtikalDto updateArtikal = await _artikalService.UpdateArtikal(id, artikal);
+            if (updateArtikal == null)
+            {
+                return BadRequest("Artikal ne postoji");
+            }
+            return Ok(updateArtikal);
+        }
+
     }
 }

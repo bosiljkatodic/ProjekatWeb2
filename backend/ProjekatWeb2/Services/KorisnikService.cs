@@ -20,7 +20,7 @@ namespace ProjekatWeb2.Services
         private readonly IKorisnikRepozitorijum _korisnikRepozitorijum;
         private readonly IConfigurationSection _secretKey;
 
-        public KorisnikService(IKorisnikRepozitorijum korisnikRepozitorijum, IMapper mapper, OnlineProdavnicaDbContext dbContext, IConfiguration configuration)
+        public KorisnikService(IKorisnikRepozitorijum korisnikRepozitorijum, IMapper mapper, IConfiguration configuration)
         {
             _korisnikRepozitorijum = korisnikRepozitorijum;
             _mapper = mapper;
