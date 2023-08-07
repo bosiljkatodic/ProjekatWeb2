@@ -12,6 +12,8 @@ namespace ProjekatWeb2.Dto
         public DateTime VrijemeDostave { get; set; }
         public DateTime VrijemePorucivanja { get; set; }
         public StatusPorudzbine StatusPorudzbine { get; set; }
-        public KorisnikDto Korisnik { get; set; }
+        public long KorisnikId { get; set; }
+        public List<ElementPorudzbineDto> ElementiPorudzbine { get; set; }
+
     }
 }

@@ -7,6 +7,5 @@ namespace ProjekatWeb2.Dto
         public long Id { get; set; }
         public long IdArtikal { get; set; }
         public int Kolicina { get; set; }
-        public PorudzbinaDto Porudzbina { get; set; }
     }
 }
