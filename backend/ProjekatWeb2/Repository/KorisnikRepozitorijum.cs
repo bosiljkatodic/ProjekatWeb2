@@ -61,7 +61,7 @@ namespace ProjekatWeb2.Repository
 
         public async Task<Korisnik> GetKorisnikById(long id)
         {
-            return await _dbContext.Korisnici.FirstOrDefaultAsync(k => k.Id == id);
+            return await _dbContext.Korisnici.Include(x => x.ArtikliProdavac).FirstOrDefaultAsync(k => k.Id == id);
         }
 
         //svi verifikovani prodavci

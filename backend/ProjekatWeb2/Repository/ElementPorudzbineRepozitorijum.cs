@@ -1,4 +1,5 @@
-﻿using ProjekatWeb2.Infrastructure;
+﻿using Microsoft.EntityFrameworkCore;
+using ProjekatWeb2.Infrastructure;
 using ProjekatWeb2.Models;
 using ProjekatWeb2.Repository.Interfaces;
 
@@ -21,6 +22,11 @@ namespace ProjekatWeb2.Repository
             }
             _dbContext.ElementPorudzbine.Add(elementPorudzbine);
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<ElementPorudzbine>> AllElementiPorudzbina()
+        {
+            return await _dbContext.ElementPorudzbine.Include(x => x.Porudzbina).ToListAsync();
         }
     }
 }

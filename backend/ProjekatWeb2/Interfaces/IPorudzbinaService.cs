@@ -10,7 +10,7 @@ namespace ProjekatWeb2.Interfaces
         Task<PorudzbinaDto> UpdatePorudzbina(long id, PorudzbinaDto updatePorudzbinaDto);
         Task DeletePorudzbina(long id);
         Task<List<PorudzbinaDto>> GetKupcevePorudzbine(long id);
-        Task<PregledPorudzbineDto> OtkaziPorudzbinu(long id, string statusVerifikacije);
+        Task<OtkaziPorudzbinuDto> OtkaziPorudzbinu(long id, string statusVerifikacije);
         Task<List<PorudzbinaDto>> GetProdavceveNovePorudzbine(long id);
         Task<List<PorudzbinaDto>> GetProdavcevePrethodnePorudzbine(long id);
 

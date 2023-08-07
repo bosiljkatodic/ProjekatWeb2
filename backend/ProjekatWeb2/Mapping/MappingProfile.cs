@@ -13,6 +13,8 @@ namespace ProjekatWeb2.Mapping
             CreateMap<Korisnik, KorisnikDto>().ReverseMap();
             CreateMap<Porudzbina, PorudzbinaDto>().ReverseMap();
             CreateMap<Korisnik, UpdateKorisnikDto>().ReverseMap();
+            CreateMap<Porudzbina, PregledPorudzbineDto>().ReverseMap();
+
             //dodaj
         }
     }

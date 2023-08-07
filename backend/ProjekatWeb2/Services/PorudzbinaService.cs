@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProjekatWeb2.Dto;
+using ProjekatWeb2.Enumerations;
 using ProjekatWeb2.Interfaces;
 using ProjekatWeb2.Models;
 using ProjekatWeb2.Repository.Interfaces;
@@ -51,6 +52,8 @@ namespace ProjekatWeb2.Services
             newPorudzbina.VrijemeDostave = DateTime.Now.AddHours(additionalHours);
             newPorudzbina.ElementiPorudzbine = null;
             newPorudzbina.Cijena = 0;
+            newPorudzbina.StatusPorudzbine = Enumerations.StatusPorudzbine.Prihvaceno;
+            newPorudzbina.VrijemePorucivanja = DateTime.Now;
             await _porudzbinaRepozitorijum.AddPorudzbina(newPorudzbina);
 
             //sve ovo mora da stavim u try, jer u slucaju da pukne, porudzbina mora da se obrise iz baze
@@ -137,39 +140,186 @@ namespace ProjekatWeb2.Services
 
         }
 
-        public Task<List<PorudzbinaDto>> GetAllPorudzbina()
+        public async Task<List<PorudzbinaDto>> GetAllPorudzbina()
         {
-            throw new NotImplementedException();
+            List<PorudzbinaDto> porudzbineList = _mapper.Map<List<PorudzbinaDto>>(await _porudzbinaRepozitorijum.AllPorudzbine());
+            var trenutnoVrijeme = DateTime.Now;
+
+            foreach (var porudzbina in porudzbineList)
+            {
+                if (porudzbina.StatusPorudzbine != StatusPorudzbine.Otkazano && porudzbina.VrijemeDostave < trenutnoVrijeme)
+                {
+                    porudzbina.StatusPorudzbine = StatusPorudzbine.Isporuceno;
+                }
+            }
+
+            return porudzbineList;
         }
 
-        public Task<List<PorudzbinaDto>> GetKupcevePorudzbine(long id)
+        public async Task<List<PorudzbinaDto>> GetKupcevePorudzbine(long id)
         {
-            throw new NotImplementedException();
+            var svePorudzbineKupca = await _porudzbinaRepozitorijum.AllKupacPorudzbine(id);
+
+            var trenutnoVreme = DateTime.Now;
+
+            foreach (var porudzbina in svePorudzbineKupca)
+            {
+                if (porudzbina.StatusPorudzbine != StatusPorudzbine.Otkazano && porudzbina.VrijemeDostave < trenutnoVreme)
+                {
+                    porudzbina.StatusPorudzbine = StatusPorudzbine.Isporuceno;
+                }
+            }
+            return _mapper.Map<List<PorudzbinaDto>>(svePorudzbineKupca);
         }
 
-        public Task<PregledPorudzbineDto> GetPorudzbinaById(long id)
+        public async Task<PregledPorudzbineDto> GetPorudzbinaById(long id)
         {
-            throw new NotImplementedException();
+            Porudzbina porudzbinaPrikaz = await _porudzbinaRepozitorijum.GetPorudzbinaById(id);
+            if (porudzbinaPrikaz == null)
+            {
+                return null;
+            }
+
+            PregledPorudzbineDto porudzbinaPrikazDto = _mapper.Map<PregledPorudzbineDto>(porudzbinaPrikaz);
+            porudzbinaPrikazDto.ImenaArtikala = new List<string>();
+
+            foreach (ElementPorudzbine artikalPorudzbine in porudzbinaPrikaz.ElementiPorudzbine)
+            {
+                Artikal praviArtikal = await _artikalRepozitorijum.GetArtikalById(artikalPorudzbine.IdArtikal);
+                if (praviArtikal == null)
+                {
+                    return null;
+                }
+                porudzbinaPrikazDto.ImenaArtikala.Add(praviArtikal.Naziv);
+            }
+
+            return porudzbinaPrikazDto;
         }
 
-        public Task<List<PorudzbinaDto>> GetProdavceveNovePorudzbine(long id)
+        public async Task<List<PorudzbinaDto>> GetProdavceveNovePorudzbine(long id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                //
+                //Korisnik prodavac = await _dbContext.Korisnici.Include(x => x.ProdavceviArtikli).FirstAsync(x => x.Id == id);
+                Korisnik prodavac = await _korisnikRepozitorijum.GetKorisnikById(id);
+
+                List<Porudzbina> prodavcevePorudzbine = new List<Porudzbina>();
+                var elementiPorudzbine = await _elementPorudzbineRepozitorijum.AllElementiPorudzbina();
+                foreach (Artikal prodavcevArtikal in prodavac.ArtikliProdavac)
+                {
+                    foreach (ElementPorudzbine prodavcevArtikalPorudzbine in elementiPorudzbine)
+                    {
+                        //ako je datum isporuke porudzbine veci od trenutnog, i ako je stanje porudzbine nije otkazana i ako porudzbina vec nije ubacena tu
+                        if (prodavcevArtikalPorudzbine.IdArtikal == prodavcevArtikal.Id
+                            && prodavcevArtikalPorudzbine.Porudzbina.VrijemeDostave > DateTime.Now
+                            && prodavcevArtikalPorudzbine.Porudzbina.StatusPorudzbine != StatusPorudzbine.Otkazano
+                            && !prodavcevePorudzbine.Contains(prodavcevArtikalPorudzbine.Porudzbina))
+                        {
+                            prodavcevePorudzbine.Add(prodavcevArtikalPorudzbine.Porudzbina);
+                        }
+                    }
+                }
+                return _mapper.Map<List<PorudzbinaDto>>(prodavcevePorudzbine);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
+            }
         }
 
-        public Task<List<PorudzbinaDto>> GetProdavcevePrethodnePorudzbine(long id)
+        public async Task<List<PorudzbinaDto>> GetProdavcevePrethodnePorudzbine(long id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                //
+                //Korisnik prodavac = await _dbContext.Korisnici.Include(x => x.ProdavceviArtikli).FirstAsync(x => x.Id == id);
+                Korisnik prodavac = await _korisnikRepozitorijum.GetKorisnikById(id);
+
+                List<Porudzbina> prodavcevePorudzbine = new List<Porudzbina>();
+                var elementiPorudzbine = await _elementPorudzbineRepozitorijum.AllElementiPorudzbina();
+                foreach (Artikal prodavcevArtikal in prodavac.ArtikliProdavac)
+                {
+                    foreach (ElementPorudzbine prodavcevArtikalPorudzbine in elementiPorudzbine)
+                    {
+                        //ako je datum isporuke porudzbine veci od trenutnog, i ako je stanje porudzbine nije otkazana i ako porudzbina vec nije ubacena tu
+                        if (prodavcevArtikalPorudzbine.IdArtikal == prodavcevArtikal.Id
+                            && prodavcevArtikalPorudzbine.Porudzbina.VrijemeDostave < DateTime.Now
+                            && prodavcevArtikalPorudzbine.Porudzbina.StatusPorudzbine != StatusPorudzbine.Otkazano
+                            && !prodavcevePorudzbine.Contains(prodavcevArtikalPorudzbine.Porudzbina))
+                        {
+                            prodavcevePorudzbine.Add(prodavcevArtikalPorudzbine.Porudzbina);
+                        }
+                    }
+                }
+                return _mapper.Map<List<PorudzbinaDto>>(prodavcevePorudzbine);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
+            }
         }
 
-        public Task<PregledPorudzbineDto> OtkaziPorudzbinu(long id, string statusVerifikacije)
+        public async Task<OtkaziPorudzbinuDto> OtkaziPorudzbinu(long id, string statusPorudzbine)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Porudzbina otkazivanjePorudzbina = await _porudzbinaRepozitorijum.GetPorudzbinaById(id);
+                if ((DateTime.UtcNow - otkazivanjePorudzbina.VrijemePorucivanja).TotalMinutes < 60 && statusPorudzbine == "Otkazano")
+                {
+                    otkazivanjePorudzbina.StatusPorudzbine = StatusPorudzbine.Otkazano;
+
+                    foreach (ElementPorudzbine elementPorudzbine in otkazivanjePorudzbina.ElementiPorudzbine)
+                    {
+                        Artikal praviArtikal = await _artikalRepozitorijum.GetArtikalById(elementPorudzbine.IdArtikal);
+                        if (praviArtikal != null)
+                        {
+                            praviArtikal.Kolicina += elementPorudzbine.Kolicina;
+                        }
+                    }
+
+                    OtkaziPorudzbinuDto otkazanaPorudzbinaDto = new OtkaziPorudzbinuDto
+                    {
+                        Message = "Uspesno otkazana porudzbina",
+                        PorudzbinaDto = _mapper.Map<PorudzbinaDto>(otkazivanjePorudzbina)
+                    };
+
+                    await _porudzbinaRepozitorijum.SacuvajIzmjene();
+                    return otkazanaPorudzbinaDto;
+                }
+                else
+                {
+                    return new OtkaziPorudzbinuDto { PorudzbinaDto = null, Message = "Nije moguce otkazati porudzbinu nakon sat vremena" };
+                }
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e.Message);
+
+                return new OtkaziPorudzbinuDto { PorudzbinaDto = null, Message = "Desio se neki problem" };
+            }
         }
 
-        public Task<PorudzbinaDto> UpdatePorudzbina(long id, PorudzbinaDto updatePorudzbinaDto)
+        public async Task<PorudzbinaDto> UpdatePorudzbina(long id, PorudzbinaDto updatePorudzbinaDto)
         {
-            throw new NotImplementedException();
+            Porudzbina updatePorudzbina = await _porudzbinaRepozitorijum.GetPorudzbinaById(id);
+            UpdatePorudzbinaFields(updatePorudzbina, updatePorudzbinaDto);
+
+            await _porudzbinaRepozitorijum.SacuvajIzmjene();
+
+            return _mapper.Map<PorudzbinaDto>(updatePorudzbina);
+        }
+
+        public static void UpdatePorudzbinaFields(Porudzbina porudzbina, PorudzbinaDto porudzbinaDto)
+        {
+            porudzbina.Komentar = porudzbinaDto.Komentar;
+            porudzbina.AdresaDostave = porudzbinaDto.AdresaDostave;
+            porudzbina.StatusPorudzbine = porudzbinaDto.StatusPorudzbine;
         }
     }
 }

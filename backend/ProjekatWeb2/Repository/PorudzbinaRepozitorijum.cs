@@ -25,6 +25,18 @@ namespace ProjekatWeb2.Repository
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<Porudzbina>> AllKupacPorudzbine(long id)
+        {
+            return await _dbContext.Porudzbine
+            .Where(p => p.KorisnikId == id)
+            .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Porudzbina>> AllPorudzbine()
+        {
+            return await _dbContext.Porudzbine.Include(x => x.ElementiPorudzbine).ToListAsync();
+        }
+
         public async Task DeletePorudzbina(Porudzbina porudzbina)
         {
             _dbContext.Porudzbine.Remove(porudzbina);
@@ -33,7 +45,12 @@ namespace ProjekatWeb2.Repository
 
         public async Task<Porudzbina> GetPorudzbinaById(long id)
         {
-            return await _dbContext.Porudzbine.FindAsync(id);
+            return await _dbContext.Porudzbine.Include(x => x.ElementiPorudzbine).FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task SacuvajIzmjene()
+        {
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

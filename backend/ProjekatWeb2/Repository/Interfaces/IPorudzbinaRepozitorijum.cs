@@ -7,5 +7,8 @@ namespace ProjekatWeb2.Repository.Interfaces
         Task AddPorudzbina(Porudzbina porudzbina);
         Task DeletePorudzbina(Porudzbina porudzbina);
         Task<Porudzbina> GetPorudzbinaById(long id);
+        Task<IEnumerable<Porudzbina>> AllPorudzbine();
+        Task<IEnumerable<Porudzbina>> AllKupacPorudzbine(long id);
+        Task SacuvajIzmjene();
     }
 }

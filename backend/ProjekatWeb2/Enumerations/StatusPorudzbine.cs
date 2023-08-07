@@ -3,6 +3,7 @@
     public enum StatusPorudzbine
     {
         Prihvaceno,
+        Isporuceno,
         Otkazano
     }
 }
