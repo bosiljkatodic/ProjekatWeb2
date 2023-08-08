@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ProjekatWeb2.Infrastructure;
+using ProjekatWeb2.Infrastructure.Configurations;
 using ProjekatWeb2.Interfaces;
 using ProjekatWeb2.Mapping;
 using ProjekatWeb2.Repository;
@@ -102,7 +103,8 @@ namespace ProjekatWeb2
             services.AddScoped<IPorudzbinaRepozitorijum, PorudzbinaRepozitorijum>();
             services.AddScoped<IPorudzbinaService, PorudzbinaService>();
             services.AddScoped<IElementPorudzbineRepozitorijum, ElementPorudzbineRepozitorijum>();
-            
+            services.AddScoped<IEmailService, EmailService>();
+
             //Registracija mapera u kontejneru, zivotni vek singleton
             var mapperConfig = new MapperConfiguration(mc =>
             {
@@ -111,7 +113,12 @@ namespace ProjekatWeb2
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
-            
+
+            var emailConfig = Configuration
+                .GetSection("EmailConfiguration")
+                .Get<EmailConfiguration>();
+            services.AddSingleton(emailConfig);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

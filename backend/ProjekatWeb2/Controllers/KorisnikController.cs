@@ -12,9 +12,11 @@ namespace ProjekatWeb2.Controllers
     public class KorisnikController : ControllerBase
     {
         private readonly IKorisnikService _korisnikService;
-        public KorisnikController(IKorisnikService korisnikService)
+        private readonly IEmailService _emailService;
+        public KorisnikController(IKorisnikService korisnikService, IEmailService emailService)
         {
             _korisnikService = korisnikService;
+            _emailService = emailService;
         }
 
         [HttpPost]
@@ -111,8 +113,8 @@ namespace ProjekatWeb2.Controllers
                 return BadRequest("Ne postoji prodavac");
             }
 
-            //KorisnikDto prodavac = await _korisnikService.GetKorisnikById(id);
-            //_emailVerifyService.SendVerificationMail(prodavac.Email, statusVerifikacije);
+            KorisnikDto prodavac = await _korisnikService.GetKorisnik(id);
+            _emailService.SendEmail(prodavac.Email, statusVerifikacije);
 
             return Ok(verifiedProdavci);
         }

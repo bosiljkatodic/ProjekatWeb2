@@ -123,12 +123,11 @@ namespace ProjekatWeb2.Services
             List<Claim> claims = new List<Claim>();
             if (registerKorisnik.TipKorisnika == TipKorisnika.Administator)
                 claims.Add(new Claim(ClaimTypes.Role, "administrator"));
-            if (registerKorisnik.TipKorisnika == TipKorisnika.Kupac)
-                claims.Add(new Claim(ClaimTypes.Role, "kupac"));
             if (registerKorisnik.TipKorisnika == TipKorisnika.Prodavac)
                 claims.Add(new Claim(ClaimTypes.Role, "prodavac"));
+            if (registerKorisnik.TipKorisnika == TipKorisnika.Kupac)
+                claims.Add(new Claim(ClaimTypes.Role, "kupac"));
 
-            //ENKRIPCIJA LOZINKE????
 
             SymmetricSecurityKey secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.Value));
             SigningCredentials signInCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
