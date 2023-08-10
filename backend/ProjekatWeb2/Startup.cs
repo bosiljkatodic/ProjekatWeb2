@@ -12,6 +12,7 @@ using ProjekatWeb2.Repository;
 using ProjekatWeb2.Repository.Interfaces;
 using ProjekatWeb2.Services;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace ProjekatWeb2
 {
@@ -85,7 +86,7 @@ namespace ProjekatWeb2
                 var reactApp = Configuration["ReactApp"];
                 options.AddPolicy(name: _cors, builder =>
                 {
-                    builder.WithOrigins(reactApp)
+                    builder.WithOrigins(reactApp, "https://localhost:3000", "https://localhost:3001", "http://localhost:3001")
                            .AllowAnyHeader()
                            .AllowAnyMethod()
                            .AllowCredentials();
@@ -104,6 +105,13 @@ namespace ProjekatWeb2
             services.AddScoped<IPorudzbinaService, PorudzbinaService>();
             services.AddScoped<IElementPorudzbineRepozitorijum, ElementPorudzbineRepozitorijum>();
             services.AddScoped<IEmailService, EmailService>();
+
+            //dodavanje za konverziju enumeracija, sa fronta saljem enumeraciju kao string, on je konvertuje ispravno
+            services.AddControllers().AddJsonOptions(x =>
+            {
+                x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                x.JsonSerializerOptions.IgnoreNullValues = true;
+            });
 
             //Registracija mapera u kontejneru, zivotni vek singleton
             var mapperConfig = new MapperConfiguration(mc =>
