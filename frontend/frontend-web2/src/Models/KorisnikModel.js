@@ -3,7 +3,7 @@ export default class KorisnikModel{
         this.id = data.id;
         this.ime = data.ime;
         this.prezime = data.prezime;
-        this.korisinckoIme = data.korisinckoIme;
+        this.korisnickoIme = data.korisnickoIme;
         this.lozinka = data.lozinka;
         this.email = data.email;
         this.adresa = data.adresa;

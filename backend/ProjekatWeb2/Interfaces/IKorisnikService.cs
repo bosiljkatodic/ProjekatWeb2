@@ -11,7 +11,7 @@ namespace ProjekatWeb2.Interfaces
         Task<IspisDto> Registration(KorisnikDto registerKorisnik);
         Task<KorisnikDto> GetKorisnik(long id);
         Task<IEnumerable<KorisnikDto>> GetAllKorisnici();
-        Task UpdateKorisnik(UpdateKorisnikDto updateKorisnikDto);
+        Task<KorisnikDto> UpdateKorisnik(long id, KorisnikDto korisnikDto);
         Task DeleteKorisnik(long id);
         Task<List<KorisnikDto>> GetProdavci();
         Task<List<KorisnikDto>> VerifyProdavac(long id, string statusVerifikacije);

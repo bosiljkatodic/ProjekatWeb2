@@ -63,30 +63,17 @@ namespace ProjekatWeb2.Controllers
 
         }
 
-
         [HttpPut("{id}")]
-        public async Task<IActionResult> AzuriranjeKorisnika(int id, [FromForm] UpdateKorisnikDto korisnikDto)
+        public async Task<IActionResult> ChangeKorisnik(long id, [FromBody] KorisnikDto korisnik)
         {
-            if (!ModelState.IsValid)
+            KorisnikDto updatedKorisnik = await _korisnikService.UpdateKorisnik(id, korisnik);
+            if (updatedKorisnik == null)
             {
-                return BadRequest(ModelState);
+                return BadRequest("Postoje neka prazna polja(mozda korisnik ne postoji)");
             }
 
-            if (id != korisnikDto.Id)
-            {
-                return BadRequest("Id korisnika se ne poklapa sa Id vrijednoscu u rutiranju.");
-            }
-
-            try
-            {
-                await _korisnikService.UpdateKorisnik(korisnikDto);
-                return Ok("Korisnik je azuriran.");
-            }
-            catch (Exception ex)
-            {
-
-                return BadRequest($"Greska prilikom azuriranja: {ex.Message}");
-            }
+            updatedKorisnik.Lozinka = korisnik.Lozinka;
+            return Ok(updatedKorisnik);
         }
 
         [HttpDelete("{id}")]

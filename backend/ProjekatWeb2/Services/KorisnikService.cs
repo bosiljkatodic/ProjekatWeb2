@@ -165,7 +165,7 @@ namespace ProjekatWeb2.Services
             return true;
         }
 
-        public static bool IsUpdateKorisnikFieldsValid(UpdateKorisnikDto korisnikDto)
+        public static bool IsUpdateKorisnikFieldsValid(KorisnikDto korisnikDto)
         {
             if (string.IsNullOrEmpty(korisnikDto.KorisnickoIme))
                 return false;
@@ -200,19 +200,19 @@ namespace ProjekatWeb2.Services
             var korisnici = await _korisnikRepozitorijum.GetAllKorisnici();
             return _mapper.Map<List<KorisnikDto>>(korisnici);
         }
-    
 
-        public async Task UpdateKorisnik(UpdateKorisnikDto korisnikDto)
+
+        public async Task<KorisnikDto> UpdateKorisnik(long id, KorisnikDto updateKorisnikDto)
         {
 
-            if (korisnikDto.Lozinka.Length < 4)
+            if (updateKorisnikDto.Lozinka.Length < 4)
             {
                 throw new Exception("Lozinka mora sadržati najmanje 4 karaktera.");
             }
 
         
             Korisnik korisnik = new Korisnik();
-            korisnik = await _korisnikRepozitorijum.GetKorisnikById(korisnikDto.Id);
+            korisnik = await _korisnikRepozitorijum.GetKorisnikById(id);
 
             if (korisnik == null)
             {
@@ -222,34 +222,28 @@ namespace ProjekatWeb2.Services
 
             var korisnici = await _korisnikRepozitorijum.GetAllKorisnici();
 
-            foreach (Korisnik k in korisnici)
-            {
-                if (korisnikDto.Email == k.Email)
-                    throw new Exception("Email vec postoji");
-            }
+            
 
-            foreach (Korisnik k in korisnici)
-            {
-                if (korisnikDto.KorisnickoIme == k.KorisnickoIme)
-                    throw new Exception("Korisnicko ime vec postoji");
-            }
-
-            if (!IsUpdateKorisnikFieldsValid(korisnikDto))
+            if (!IsUpdateKorisnikFieldsValid(updateKorisnikDto))
                 throw new Exception("Sva polja moraju biti validna.");
 
-            korisnik.KorisnickoIme = korisnikDto.KorisnickoIme;
-            korisnik.Email = korisnikDto.Email;
-            korisnik.Ime = korisnikDto.Ime;
-            korisnik.Prezime = korisnikDto.Prezime;
-            korisnik.Lozinka = BCrypt.Net.BCrypt.HashPassword(korisnikDto.Lozinka);
-            korisnik.Adresa = korisnikDto.Adresa;
-            korisnik.Slika = korisnikDto.Slika;
-            korisnik.DatumRodjenja = korisnikDto.DatumRodjenja;
+            korisnik.KorisnickoIme = updateKorisnikDto.KorisnickoIme;
+            korisnik.Email = updateKorisnikDto.Email;
+            korisnik.Ime = updateKorisnikDto.Ime;
+            korisnik.Prezime = updateKorisnikDto.Prezime;
+            korisnik.Lozinka = BCrypt.Net.BCrypt.HashPassword(updateKorisnikDto.Lozinka);
+            korisnik.Adresa = updateKorisnikDto.Adresa;
+            korisnik.Slika = updateKorisnikDto.Slika;
+            korisnik.DatumRodjenja = updateKorisnikDto.DatumRodjenja;
+            korisnik.VerifikacijaProdavca = updateKorisnikDto.VerifikacijaProdavca;
+
 
 
             await _korisnikRepozitorijum.UpdateKorisnik(korisnik);
+            return _mapper.Map<KorisnikDto>(korisnik);
+
             //mapiranje?
-    }
+        }
 
         public async Task DeleteKorisnik(long id)
         {
