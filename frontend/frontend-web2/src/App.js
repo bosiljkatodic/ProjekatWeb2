@@ -6,6 +6,8 @@ import Registration from './Components/AuthComponent/Registration'
 import React, { useState, useEffect } from 'react'; 
 import KupacDashboard from './Components/KupacDashboard';
 import Profil from './Components/Profil';
+import DetaljiPorudzbine from './Components/DetaljiPorudzbine';
+import KupacPorudzbina from './Components/KupacPorudzbina';
 
 function App() {
 
@@ -52,6 +54,8 @@ const handleLogout = () => {
       <Route path='/registration' element={<Registration handleKorisnikInfo={handleKorisnikInfo}></Registration>}/>
       <Route path='/kupacDashboard' element={<KupacDashboard></KupacDashboard>}/>
       <Route path='/profil' element={<Profil></Profil>} />
+      <Route path="/detalji/:id" element={<DetaljiPorudzbine />} />
+      <Route path='/kupacDashboard/kupacPorudzbina' element={<KupacPorudzbina></KupacPorudzbina>}/>
     </Routes>
     </BrowserRouter>
     </div>

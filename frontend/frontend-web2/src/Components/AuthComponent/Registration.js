@@ -154,7 +154,7 @@ const Registration = ({handleKorisnikInfo}) => {
              Registracija
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-              <Grid container spacing={2}>
+            <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     autoComplete="given-name"
@@ -175,7 +175,7 @@ const Registration = ({handleKorisnikInfo}) => {
                     id="lastName"
                     label="Prezime"
                     name="lastName"
-          value={prezime}
+                    value={prezime}
                     onChange={(e) => setPrezime(e.target.value)}
                     autoComplete="family-name"
                   />
@@ -229,7 +229,7 @@ const Registration = ({handleKorisnikInfo}) => {
                     fullWidth
                     id="adresa"
                     label="Adresa"
-          value={adresa}
+                value={adresa}
                     onChange={(e) => setAdresa(e.target.value)}
                     name="adresa"
                   />
@@ -242,7 +242,7 @@ const Registration = ({handleKorisnikInfo}) => {
                     label="Lozinka"
                     type="password"
                     id="password"
-          value={lozinka}
+                value={lozinka}
                     onChange={(e) => setLozinka(e.target.value)}
                     autoComplete="new-password"
                   />
@@ -255,7 +255,7 @@ const Registration = ({handleKorisnikInfo}) => {
                     label="Ponovi lozinku"
                     type="password"
                     id="password2"
-          value={lozinka2}
+                value={lozinka2}
                    onChange={(e) => setLozinka2(e.target.value)}
                     autoComplete="new-password"
                   />

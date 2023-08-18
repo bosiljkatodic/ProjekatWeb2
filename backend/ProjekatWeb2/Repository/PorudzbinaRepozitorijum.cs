@@ -28,7 +28,7 @@ namespace ProjekatWeb2.Repository
         public async Task<IEnumerable<Porudzbina>> AllKupacPorudzbine(long id)
         {
             return await _dbContext.Porudzbine
-            .Where(p => p.KorisnikId == id)
+            .Where(p => p.KorisnikId == id).Include(x => x.ElementiPorudzbine)
             .ToListAsync();
         }
 
@@ -52,5 +52,7 @@ namespace ProjekatWeb2.Repository
         {
             await _dbContext.SaveChangesAsync();
         }
+
+
     }
 }

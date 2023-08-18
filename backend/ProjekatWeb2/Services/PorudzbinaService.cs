@@ -321,5 +321,11 @@ namespace ProjekatWeb2.Services
             porudzbina.AdresaDostave = porudzbinaDto.AdresaDostave;
             porudzbina.StatusPorudzbine = porudzbinaDto.StatusPorudzbine;
         }
+
+        /*public async Task<List<ArtikalDto>> DobaviArtiklePorudzbine(long porudzbinaId)
+        {
+            var artikli = await _porudzbinaRepozitorijum.DobaviArtiklePorudzbine(porudzbinaId);
+            return _mapper.Map<List<ArtikalDto>>(artikli);
+        }*/
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ProjekatWeb2.Dto;
+using ProjekatWeb2.Models;
 
 namespace ProjekatWeb2.Interfaces
 {
@@ -13,6 +14,7 @@ namespace ProjekatWeb2.Interfaces
         Task<OtkaziPorudzbinuDto> OtkaziPorudzbinu(long id, string statusVerifikacije);
         Task<List<PorudzbinaDto>> GetProdavceveNovePorudzbine(long id);
         Task<List<PorudzbinaDto>> GetProdavcevePrethodnePorudzbine(long id);
+
 
     }
 }

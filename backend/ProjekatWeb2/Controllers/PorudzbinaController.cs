@@ -123,5 +123,19 @@ namespace ProjekatWeb2.Controllers
         {
             return Ok(await _porudzbinaService.UpdatePorudzbina(id, porudzbina));
         }
+        /*
+        [HttpGet("{id}/artikliPorudzbine")]
+        //[Authorize(Roles = "Admin, Kupac")]
+        public async Task<IActionResult> DobaviArtikleZaPorudzbinu(long id)
+        {
+            List<Artikal> artikli = await _porudzbinaService.DobaviArtiklePorudzbine(id);
+
+            if (artikli.Count == 0)
+            {
+                return NotFound("Prazna");
+            }
+
+            return Ok(artikli);
+        }*/
     }
 }
