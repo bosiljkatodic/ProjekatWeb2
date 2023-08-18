@@ -319,12 +319,14 @@ const handleOtkaziDugmeClick = async (e) => {
                         alt="Fotografija artikla"
                         className="ui big image"
                         src={artikal.fotografija}
+                        width="100"
+                        height="100"
                       ></img>
                       <div className="content">
                         {artikal.naziv}
-                        <div className="sub header">Cijena: {artikal.cijena} dinara</div>
-                        <div className="sub header">Kolicina: {artikal.kolicina}</div>
-                        <div className="sub header">Cijena Dostave: {artikal.cijenaDostave} dinara</div>
+                        <div className="sub header">Cijena artikla: {artikal.cijena} dinara</div>
+                        <div className="sub header">Dostupna količina: {artikal.kolicina}</div>
+                        <div className="sub header">Cijena dostave: {artikal.cijenaDostave} dinara</div>
                       </div>
                     
                     </TableCell>

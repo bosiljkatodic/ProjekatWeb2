@@ -8,6 +8,9 @@ import KupacDashboard from './Components/KupacDashboard';
 import Profil from './Components/Profil';
 import DetaljiPorudzbine from './Components/DetaljiPorudzbine';
 import KupacPorudzbina from './Components/KupacPorudzbina';
+import ProdavacDashboard from './Components/ProdavacDashboard';
+import ProdavacNoviArtikal from './Components/ProdavacNoviArtikal';
+import ProdavacSviArtikli from './Components/ProdavacSviArtikli';
 
 function App() {
 
@@ -56,6 +59,9 @@ const handleLogout = () => {
       <Route path='/profil' element={<Profil></Profil>} />
       <Route path="/detalji/:id" element={<DetaljiPorudzbine />} />
       <Route path='/kupacDashboard/kupacPorudzbina' element={<KupacPorudzbina></KupacPorudzbina>}/>
+      <Route path='/prodavacDashboard' element={<ProdavacDashboard statusVerifikacije={statusVerifikacije} ></ProdavacDashboard>}/>
+      <Route path='/prodavacNoviArtikal' element={<ProdavacNoviArtikal></ProdavacNoviArtikal>}/>
+      <Route path='/prodavacSviArtikli' element={<ProdavacSviArtikli></ProdavacSviArtikli>}/>
     </Routes>
     </BrowserRouter>
     </div>

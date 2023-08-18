@@ -12,6 +12,5 @@ namespace ProjekatWeb2.Dto
         public string Fotografija { get; set; }
         public double CijenaDostave { get; set; }
         public long ProdavacId { get; set; }
-        public KorisnikDto Prodavac { get; set; }
     }
 }
