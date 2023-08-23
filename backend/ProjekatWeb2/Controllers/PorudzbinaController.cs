@@ -137,5 +137,21 @@ namespace ProjekatWeb2.Controllers
 
             return Ok(artikli);
         }*/
+
+
+        [HttpGet("{porudzbinaId}/artikliProdavca/{prodavacId}")]
+        //[Authorize(Roles = "Prodavac")]
+        public async Task<IActionResult> DobaviArtiklePorudzbineZaProdavca(long porudzbinaId, long prodavacId)
+        {
+            List<ArtikalDto> artikli = await _porudzbinaService.DobaviArtiklePorudzbineZaProdavca(porudzbinaId, prodavacId);
+
+            if (artikli.Count == 0)
+            {
+                return NotFound("prazna");
+            }
+
+            return Ok(artikli);
+
+        }
     }
 }

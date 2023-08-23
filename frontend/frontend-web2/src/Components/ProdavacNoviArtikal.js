@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AddArtikal } from "../Services/ArtikalService";
 import UserImage from "./UserImage";
-import product from "../Images/product.jpg";
+import productImage from "../Images/product.jpg";
 import { Button } from "@mui/material";
 
 const ProdavacNoviArtikal = () => {
@@ -11,7 +11,7 @@ const ProdavacNoviArtikal = () => {
     const [cijena, setCijena] = useState(0);
     const [kolicina, setKolicina] = useState(0); 
     const [opis, setOpis] = useState('');
-    const [fotografija, setFotografija] = useState(product);
+    const [fotografija, setFotografija] = useState(productImage);
     
 
     const setInputsToEmpty = () => {

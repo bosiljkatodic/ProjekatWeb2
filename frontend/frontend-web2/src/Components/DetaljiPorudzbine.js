@@ -18,6 +18,9 @@ const DetaljiPorudzbine = () => {
     const [porudzbina, setPorudzbina] = useState({});
     const [loading, setLoading] = useState(true);
   
+    const prodavac = JSON.parse(sessionStorage.getItem('korisnik'));
+    const prodavacId = prodavac.id;
+    
     const navigate = useNavigate();
   
     useEffect(() => {
@@ -40,6 +43,8 @@ const DetaljiPorudzbine = () => {
       const korisnik = JSON.parse(sessionStorage.getItem('korisnik'))
       if(korisnik.tipKorisnika === 'Kupac'){
         navigate('/kupacDashboard')
+      }else if(korisnik.tipKorisnika === 'Prodavac'){
+        navigate('/prodavacNovePorudzbine')
       }
       /*else if(korisnik.tipKorisnika === 'Prodavac'){
         const pathname = window.location.pathname;

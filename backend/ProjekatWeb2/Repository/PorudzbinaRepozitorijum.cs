@@ -52,7 +52,15 @@ namespace ProjekatWeb2.Repository
         {
             await _dbContext.SaveChangesAsync();
         }
-
+        /*
+        public async Task<List<Artikal>> DobaviArtiklePorudzbineZaProdavca(int porudzbinaId, int prodavacId)
+        {
+            return await _dbContext.ElementPorudzbine
+            .Include(pa => pa.IdArtikal)
+            .Where(pa => pa.IdPorudzbina == porudzbinaId && pa == prodavacId)
+            .Select(pa => pa.Artikal)
+            .ToListAsync();
+        }*/
 
     }
 }

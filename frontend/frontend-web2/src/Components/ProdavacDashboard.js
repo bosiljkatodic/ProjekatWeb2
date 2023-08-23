@@ -3,19 +3,10 @@ import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
 import HourglassTopTwoToneIcon from '@mui/icons-material/HourglassTopTwoTone';
 import VerifiedUserTwoToneIcon from '@mui/icons-material/VerifiedUserTwoTone';
 
-import background from "../Images/background.jpg";
-
-const divStyle = {
-    backgroundSize: 'cover',
-    width: '100%',
-    height: '700px',
-    backgroundImage: `url(${background})`,
-    backgroundPosition: 'center'
-  };
 
 const ProdavacDashboard = ({statusVerifikacije}) => {
     return (
-        <div style={divStyle}>
+        <div>
             {statusVerifikacije === 'UProcesu' && 
                 <>
                     <h2 className="naslov">

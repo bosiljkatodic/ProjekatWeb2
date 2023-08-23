@@ -96,3 +96,73 @@ export const CreatePorudzbina = async(porudzbinaDto, token) =>{
          return null;
     }    
 }
+
+
+
+export const GetProdavceveNovePorudzbine = async (id, token) => {
+    try{
+        const {data} = await axios.get(
+            `${baseUrl}/orders/getProdavceveNovePorudzbine/${id}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                }, 
+                withCredentials: true
+            }
+        );
+        const novePorudzbine = [];
+        for(var i = 0; i < data.length; i++){
+            var porudzbina = new PorudzbinaModel(data[i]);
+            porudzbina.addAllArtiklePorudzbine(data[i].elementiPorudzbine);
+            novePorudzbine.push(porudzbina);
+        }
+        return novePorudzbine;
+    }catch(err){
+        console.log(err);
+        alert("Nesto se desilo prilikom dobavljanja informacija novim prodavcevim porudzbinama")
+        return null;
+    }
+}
+
+export const GetArtiklePorudzbineProdavca = async (id, prodavacId, token) => {
+    try {
+      const response = await axios.get(`${baseUrl}/orders/${id}/artikliProdavca/${prodavacId}`,
+        {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }, 
+        withCredentials: true
+        }
+    );
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Greska prilikom dobavljanja detalja porudzbine');
+    }
+  };
+
+  export const GetPrethodnePorudzbineProdavac = async (prodavacId, token) => {
+    try {
+      const {data} = await axios.get(`${baseUrl}/orders/getProdavcevePrethodnePorudzbine/${prodavacId}`,
+        {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }, 
+        withCredentials: true
+        }
+    );
+        const prethodnePorudzbine = [];
+        for(var i = 0; i < data.length; i++){
+            var porudzbina = new PorudzbinaModel(data[i]);
+            porudzbina.addAllArtiklePorudzbine(data[i].elementiPorudzbine);
+            prethodnePorudzbine.push(porudzbina);
+        }
+        return prethodnePorudzbine;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Greska prilikom dobavljanja prethodnih porudzbina prodavca.');
+    }
+  };

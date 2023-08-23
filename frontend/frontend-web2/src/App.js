@@ -11,6 +11,10 @@ import KupacPorudzbina from './Components/KupacPorudzbina';
 import ProdavacDashboard from './Components/ProdavacDashboard';
 import ProdavacNoviArtikal from './Components/ProdavacNoviArtikal';
 import ProdavacSviArtikli from './Components/ProdavacSviArtikli';
+import IzmijeniArtikal from './Components/IzmijeniArtikal';
+import ProdavacNovePorudzbine from './Components/ProdavacNovePorudzbine';
+import DetaljiPorudzbineProdavac from './Components/DetaljiPorudzbineProdavac';
+import ProdavacPrethodnePorudzbine from './Components/ProdavacPrethodnePorudzbine';
 
 function App() {
 
@@ -62,6 +66,11 @@ const handleLogout = () => {
       <Route path='/prodavacDashboard' element={<ProdavacDashboard statusVerifikacije={statusVerifikacije} ></ProdavacDashboard>}/>
       <Route path='/prodavacNoviArtikal' element={<ProdavacNoviArtikal></ProdavacNoviArtikal>}/>
       <Route path='/prodavacSviArtikli' element={<ProdavacSviArtikli></ProdavacSviArtikli>}/>
+      <Route path='/prodavacSviArtikli/izmijeniArtikal/:id' element={<IzmijeniArtikal></IzmijeniArtikal>}/>
+      <Route path='/prodavacNovePorudzbine' element={<ProdavacNovePorudzbine></ProdavacNovePorudzbine>}/>
+      <Route path='/detaljiProdavca/:id' element={<DetaljiPorudzbineProdavac></DetaljiPorudzbineProdavac>}/>
+      <Route path='/prodavacPrethodnePorudzbine' element={<ProdavacPrethodnePorudzbine></ProdavacPrethodnePorudzbine>}/>
+
     </Routes>
     </BrowserRouter>
     </div>

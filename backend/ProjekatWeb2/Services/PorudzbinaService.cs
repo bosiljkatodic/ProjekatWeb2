@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using ProjekatWeb2.Dto;
 using ProjekatWeb2.Enumerations;
@@ -16,14 +17,17 @@ namespace ProjekatWeb2.Services
         private readonly IKorisnikRepozitorijum _korisnikRepozitorijum;
         private readonly IPorudzbinaRepozitorijum _porudzbinaRepozitorijum;
         private readonly IElementPorudzbineRepozitorijum _elementPorudzbineRepozitorijum;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PorudzbinaService(IMapper mapper, IArtikalRepozitorijum artikalRepozitorijum, IKorisnikRepozitorijum korisnikRepozitorijum, IPorudzbinaRepozitorijum porudzbinaRepozitorijum, IElementPorudzbineRepozitorijum elementPorudzbineRepozitorijum)
+        public PorudzbinaService(IMapper mapper, IArtikalRepozitorijum artikalRepozitorijum, IKorisnikRepozitorijum korisnikRepozitorijum, IPorudzbinaRepozitorijum porudzbinaRepozitorijum, IElementPorudzbineRepozitorijum elementPorudzbineRepozitorijum, IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _artikalRepozitorijum = artikalRepozitorijum;
             _korisnikRepozitorijum = korisnikRepozitorijum;
             _porudzbinaRepozitorijum = porudzbinaRepozitorijum;
             _elementPorudzbineRepozitorijum = elementPorudzbineRepozitorijum;
+            _httpContextAccessor = httpContextAccessor;
+
         }
 
         public async Task<PorudzbinaDto> AddPorudzbina(PorudzbinaDto newPorudzbinaDto)
@@ -51,7 +55,7 @@ namespace ProjekatWeb2.Services
             int additionalHours = hoursGenerator.Next(2, 12);
             newPorudzbina.VrijemeDostave = DateTime.Now.AddHours(additionalHours);
             newPorudzbina.ElementiPorudzbine = null;
-            newPorudzbina.Cijena = 0;
+            newPorudzbina.Cijena = newPorudzbinaDto.Cijena;
             newPorudzbina.StatusPorudzbine = Enumerations.StatusPorudzbine.Prihvaceno;
             newPorudzbina.VrijemePorucivanja = DateTime.Now;
             await _porudzbinaRepozitorijum.AddPorudzbina(newPorudzbina);
@@ -82,7 +86,7 @@ namespace ProjekatWeb2.Services
                         return null;
                     }
 
-                    newPorudzbina.Cijena += elementPorudzbineDto.Kolicina * artikal.Cijena + artikal.CijenaDostave;
+                    //newPorudzbina.Cijena += elementPorudzbineDto.Kolicina * artikal.Cijena + artikal.CijenaDostave;
 
                     //skinuti kolicinu artikala kolko je poruceno
                     artikal.Kolicina -= elementPorudzbineDto.Kolicina;
@@ -206,6 +210,7 @@ namespace ProjekatWeb2.Services
 
                 List<Porudzbina> prodavcevePorudzbine = new List<Porudzbina>();
                 var elementiPorudzbine = await _elementPorudzbineRepozitorijum.AllElementiPorudzbina();
+
                 foreach (Artikal prodavcevArtikal in prodavac.ArtikliProdavac)
                 {
                     foreach (ElementPorudzbine prodavcevArtikalPorudzbine in elementiPorudzbine)
@@ -321,6 +326,47 @@ namespace ProjekatWeb2.Services
             porudzbina.AdresaDostave = porudzbinaDto.AdresaDostave;
             porudzbina.StatusPorudzbine = porudzbinaDto.StatusPorudzbine;
         }
+
+        public async Task<List<ArtikalDto>> DobaviArtiklePorudzbineZaProdavca(long porudzbinaId, long prodavacId)
+        {
+            //var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirst("id");
+
+            //if (userIdClaim == null)
+            //{
+            //    throw new Exception("ID korisnika nije pronađen u claim-u.");
+           // }
+
+           // if (!long.TryParse(userIdClaim.Value, out long prodavacId))
+            //{
+            //    throw new Exception("Nije moguće pretvoriti ID korisnika u broj.");
+           // }
+
+            Porudzbina porudzbina = await _porudzbinaRepozitorijum.GetPorudzbinaById(porudzbinaId);
+
+            List<ElementPorudzbine> elementiPorudzbine = porudzbina.ElementiPorudzbine;
+
+            Korisnik prodavac = await _korisnikRepozitorijum.GetKorisnikById(prodavacId);
+
+            List<Artikal> artikli = prodavac.ArtikliProdavac;
+
+            List<Artikal> artikliRezultat = new List<Artikal>();
+
+            foreach (ElementPorudzbine element in elementiPorudzbine)
+            {
+                foreach (Artikal artikal in artikli)
+                {
+                    if (element.IdArtikal == artikal.Id)
+                    {
+                        artikliRezultat.Add(artikal);
+                    }
+
+                }
+            }
+            //List<Artikal> artikli = await _porudzbinaRepozitorijum.DobaviArtiklePorudzbineZaProdavca(porudzbinaId, prodavacId);
+
+            return _mapper.Map<List<ArtikalDto>>(artikliRezultat);
+        }
+
 
         /*public async Task<List<ArtikalDto>> DobaviArtiklePorudzbine(long porudzbinaId)
         {

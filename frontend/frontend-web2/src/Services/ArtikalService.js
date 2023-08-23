@@ -69,10 +69,10 @@ export const GetProdavceveArtikle = async(prodavacId, token) => {
 }
 
 
-export const DeleteArtikal = async(artikalId, token) => {
+export const DeleteArtikal = async(id, token) => {
     try{
         const {data} = axios.delete(
-            `${baseUrl}/articles/${artikalId}`,
+            `${baseUrl}/articles/${id}`,
             {
                 headers:{
                     'Content-Type': 'application/json',
@@ -85,6 +85,50 @@ export const DeleteArtikal = async(artikalId, token) => {
     }catch(err){
         console.log(err);
         alert("Nesto se desilo prilikom brisanja artikla");
+        return null;
+    }
+}
+
+export const GetArtikalById = async(artikalId, token) => {
+    try{
+        const {data} = await axios.get(
+            `${baseUrl}/articles/${artikalId}`,
+            {
+                headers:{
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}` 
+                },
+                withCredential: true
+            }
+        );
+        const artikal = new ArtikalModel(data);
+        return artikal;
+    }catch(err){
+        console.log(err);
+        alert('Nesto se desilo prilikom dobavljanja informacija o artiklu');
+        return null;
+    }
+}
+
+
+export const UpdateArtikal = async(id, artikalDto, token) => {
+    try{
+        const {data} = await axios.put(
+            `${baseUrl}/articles/${id}`, 
+            artikalDto,
+            {
+                headers:{
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}` 
+                },
+                withCredential: true
+            }
+        );
+        const updateArtikal = new ArtikalModel(data);
+        return updateArtikal;
+    }catch(err){
+        console.log(err);
+        alert('Nesto se desilo prilikom azuriranja informacija o artiklu');
         return null;
     }
 }

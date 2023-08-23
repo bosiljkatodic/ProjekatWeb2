@@ -15,6 +15,7 @@ namespace ProjekatWeb2.Interfaces
         Task<List<PorudzbinaDto>> GetProdavceveNovePorudzbine(long id);
         Task<List<PorudzbinaDto>> GetProdavcevePrethodnePorudzbine(long id);
 
+        Task<List<ArtikalDto>> DobaviArtiklePorudzbineZaProdavca(long porudzbinaId, long idProdavac);
 
     }
 }

@@ -71,7 +71,7 @@ const Login = ({handleKorisnikInfo}) => {
             sessionStorage.setItem("korisnik", JSON.stringify(data.korisnikDto));
             const tipKorisnika = data.korisnikDto.tipKorisnika; // propertiji su mala slova
             handleKorisnikInfo(true); //prvo se postave podaci pa se re reneruje
-            alert("Uspesno ste se logovali");
+            alert("Uspješno logovanje.");
             redirectTo(tipKorisnika);
         }
         else{

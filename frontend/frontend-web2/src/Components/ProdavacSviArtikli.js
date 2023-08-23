@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import { DeleteArtikal, GetProdavceveArtikle } from "../Services/ArtikalService";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 
 export default function ProdavacSviArtikli() {
   const [loading, setLoading] = useState(true);
@@ -26,20 +27,21 @@ export default function ProdavacSviArtikli() {
 
 
   const handleClickPromeniArtikal = (e) => {
-    const artikalId = e.target.id;
-    navigate(`/prodavacSviArtikli/IzmeniArtikal/${artikalId}`);   
+    const id = e.target.id;
+    navigate(`/prodavacSviArtikli/izmijeniArtikal/${id}`);   
   }
 
   const handleClickObrisiArtikal = async (e) => {
     const stringId = e.target.name.split(' ')[1];
-    const artikalId = parseInt(stringId);
+    const id = parseInt(stringId);
     const token = sessionStorage.getItem('token');
-    const response = await DeleteArtikal(artikalId, token);
+    const response = await DeleteArtikal(id, token);
 
     if(response !== null){
-        alert("Uspesno obrisan artikal");
+        alert("Uspješno ste obrisali artikal.");
 
     }
+    window.location.reload();
   }
 
   return ( 
@@ -66,7 +68,7 @@ export default function ProdavacSviArtikli() {
                 Cijena Dostave
                 </th>
                 <th>Opis</th>
-                <th>Obrisite/Izmenite</th>
+                <th>Opcije</th>
               </tr>
             </thead>
             <tbody>
@@ -82,6 +84,8 @@ export default function ProdavacSviArtikli() {
                       ></img>
                       
                     </h4>
+                    <label> {artikal.naziv}</label> 
+
                   </td>
                   <td className="center aligned">
                     <div className="sub header">{artikal.cijena} dinara</div>
@@ -89,7 +93,7 @@ export default function ProdavacSviArtikli() {
                   <td className="center aligned">
                     <div className="sub header">          
                                     {artikal.kolicina}
-</div>
+                    </div>
                   </td>
                   <td className="center aligned">
                   <div className="sub header">
@@ -99,23 +103,23 @@ export default function ProdavacSviArtikli() {
 
                   <td className="center aligned">{artikal.opis}</td>
                   <td className="center aligned">
-                    <button
-                      className="ui blue labeled icon button"
+                    <Button
+                      variant="contained"
                       id={artikal.id}
                       onClick={(e) => handleClickPromeniArtikal(e)}
                     >
                       <i className="check icon"></i>
-                      Promenite artikal
-                    </button>{" "}
+                      Izmijeni artikal
+                    </Button>{" "}
                     <br />
-                    <button
-                      className="ui red labeled icon button"
+                    <Button
+                      variant="contained"
                       name={`obrisi ${artikal.id}`}
                       onClick={(e) => handleClickObrisiArtikal(e)}
                     >
                       <i className="x icon"></i>
-                      Obrisite Artikal
-                    </button>
+                      Obriši artikal
+                    </Button>
                   </td>
                 </tr>
               ))}
