@@ -2,7 +2,7 @@
 {
     public enum TipKorisnika
     {
-        Administator,
+        Administrator,
         Prodavac,
         Kupac
     }

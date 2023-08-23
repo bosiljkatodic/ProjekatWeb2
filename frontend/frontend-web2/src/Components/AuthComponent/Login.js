@@ -54,7 +54,7 @@ const Login = ({handleKorisnikInfo}) => {
 
         const redirectTo = (tipKorisnika) => {
             if(tipKorisnika === 'Administrator'){
-                navigate('/adminDashboard');
+                navigate('/administratorDashboard');
             }
             else if(tipKorisnika === 'Kupac'){
                 navigate('/kupacDashboard');

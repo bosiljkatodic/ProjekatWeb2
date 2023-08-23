@@ -122,6 +122,37 @@ const Header = ({isAuth, tipKorisnika, statusVerifikacije, handleLogout}) => {
             </Button> 
             : null}
 
+
+            {isAuth && tipKorisnika === 'Administrator'  ? 
+            <Button 
+                variant='contained'
+                className='headerButton'
+                onClick={()=>nav('administratorDashboard')}
+            >
+                Admin dashboard
+            </Button> 
+            : null}
+
+            {isAuth && tipKorisnika === 'Administrator' ? 
+            <Button 
+                variant='contained'
+                className='headerButton'
+                onClick={()=>nav('verifikacija')}
+            >
+                Verifikacija prodavaca
+            </Button> 
+            : null}
+
+            {isAuth && tipKorisnika === 'Administrator' ? 
+            <Button 
+                variant='contained'
+                className='headerButton'
+                onClick={()=>nav('svePorudzbineAdmin')}
+            >
+                Sve porudzbine
+            </Button> 
+            : null}
+
             {isAuth ? 
             <Button
                 variant='contained'

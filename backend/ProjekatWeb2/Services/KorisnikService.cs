@@ -55,7 +55,7 @@ namespace ProjekatWeb2.Services
             if (BCrypt.Net.BCrypt.Verify(loginKorisnikDto.Lozinka, loginKorisnik.Lozinka))
             {
                 List<Claim> claims = new List<Claim>();
-                if (loginKorisnik.TipKorisnika == TipKorisnika.Administator)
+                if (loginKorisnik.TipKorisnika == TipKorisnika.Administrator)
                     claims.Add(new Claim(ClaimTypes.Role, "administrator"));
                 if (loginKorisnik.TipKorisnika == TipKorisnika.Kupac)
                     claims.Add(new Claim(ClaimTypes.Role, "kupac"));
@@ -121,7 +121,7 @@ namespace ProjekatWeb2.Services
 
             //nema provere za password, pa odmah vracamo token
             List<Claim> claims = new List<Claim>();
-            if (registerKorisnik.TipKorisnika == TipKorisnika.Administator)
+            if (registerKorisnik.TipKorisnika == TipKorisnika.Administrator)
                 claims.Add(new Claim(ClaimTypes.Role, "administrator"));
             if (registerKorisnik.TipKorisnika == TipKorisnika.Prodavac)
                 claims.Add(new Claim(ClaimTypes.Role, "prodavac"));
@@ -195,7 +195,7 @@ namespace ProjekatWeb2.Services
             return korisnikDto;
         }
 
-        public async Task<IEnumerable<KorisnikDto>> GetAllKorisnici()
+        public async Task<List<KorisnikDto>> GetAllKorisnici()
         {
             var korisnici = await _korisnikRepozitorijum.GetAllKorisnici();
             return _mapper.Map<List<KorisnikDto>>(korisnici);

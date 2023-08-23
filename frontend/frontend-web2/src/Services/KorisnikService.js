@@ -72,3 +72,73 @@ export const getKorisnikId = async (id) => {
       throw new Error('Greska prilikom dobavljanja informacija o korisniku.');
     }
   };
+
+
+  export const GetProdavce = async (token) => {
+    try{
+        const {data} = await axios.get(
+            `${baseUrl}/users/getProdavci`,
+            {
+                headers:{
+                    'Content-Type' : 'application/json',
+                    Authorization : `Bearer ${token}`
+                },
+            }
+        );
+        const prodavci = data.map(prodavac => {
+            return new KorisnikModel(prodavac);
+        })
+        return prodavci;
+    }catch(err){
+        console.log(err);
+        alert("Nesto se desilo prilikom dobavljanja prodavaca");
+        return null;
+    }
+}
+
+export const GetKorisnike = async (token) => {
+    try{
+        const {data} = await axios.get(
+            `${baseUrl}/users`,
+            {
+                headers:{
+                    'Content-Type' : 'application/json',
+                    Authorization : `Bearer ${token}`
+                },
+            }
+        );
+        const korisnici = data.map(korisnik => {
+            return new KorisnikModel(korisnik);
+        })
+        return korisnici;
+    }catch(err){
+        console.log(err);
+        alert("Nesto se desilo prilikom dobavljanja prodavaca");
+        return null;
+    }
+}
+
+export const VerifyProdavca = async (prodavacId, buttonType, token) =>{
+    try{
+        const {data} = await axios.put(
+            `${baseUrl}/users/verifyProdavca/${prodavacId}`,
+            buttonType,
+            {
+                headers:{
+                    'Content-Type' : 'application/json',
+                    'Authorization' : `Bearer ${token}`
+                },
+                withCredentials: true
+            }
+        );
+        const verifikovaniProdavci = data.map(verifikovanProdavac => {
+            return new KorisnikModel(verifikovanProdavac);
+        })
+        return verifikovaniProdavci;
+    }catch(err){
+        console.log(err);
+        alert("Nesto se desilo prilikom verifikacije prodavca");
+        return null;
+    }
+
+}

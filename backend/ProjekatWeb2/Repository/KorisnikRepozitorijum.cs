@@ -22,7 +22,7 @@ namespace ProjekatWeb2.Repository
                 throw new ArgumentNullException(nameof(korisnik), "Korisnik ne može biti null.");
 
             }
-            if (korisnik.TipKorisnika == TipKorisnika.Administator)
+            if (korisnik.TipKorisnika == TipKorisnika.Administrator)
             {
                 korisnik.VerifikacijaProdavca = VerifikacijaProdavca.Prihvacen;
 
@@ -49,7 +49,7 @@ namespace ProjekatWeb2.Repository
             }
         }
 
-        public async Task<IEnumerable<Korisnik>> GetAllKorisnici()
+        public async Task<List<Korisnik>> GetAllKorisnici()
         {
             return await _dbContext.Korisnici.ToListAsync();
         }
@@ -68,7 +68,7 @@ namespace ProjekatWeb2.Repository
         public async Task<List<Korisnik>> SviProdavci()
         {
             var prodavci = await _dbContext.Korisnici
-            .Where(k => k.TipKorisnika == TipKorisnika.Prodavac && k.VerifikacijaProdavca != VerifikacijaProdavca.Odbijen)
+            .Where(k => k.TipKorisnika == TipKorisnika.Prodavac)
             .ToListAsync();
             return prodavci;
 

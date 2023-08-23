@@ -15,6 +15,9 @@ import IzmijeniArtikal from './Components/IzmijeniArtikal';
 import ProdavacNovePorudzbine from './Components/ProdavacNovePorudzbine';
 import DetaljiPorudzbineProdavac from './Components/DetaljiPorudzbineProdavac';
 import ProdavacPrethodnePorudzbine from './Components/ProdavacPrethodnePorudzbine';
+import AdminDashboard from './Components/AdministratorDashboard';
+import AdminSvePorudzbine from './Components/AdministratorSvePorudzbine';
+import AdminVerifikacija from './Components/AdministratorVerifikacijaProdavca';
 
 function App() {
 
@@ -70,6 +73,9 @@ const handleLogout = () => {
       <Route path='/prodavacNovePorudzbine' element={<ProdavacNovePorudzbine></ProdavacNovePorudzbine>}/>
       <Route path='/detaljiProdavca/:id' element={<DetaljiPorudzbineProdavac></DetaljiPorudzbineProdavac>}/>
       <Route path='/prodavacPrethodnePorudzbine' element={<ProdavacPrethodnePorudzbine></ProdavacPrethodnePorudzbine>}/>
+      <Route path='/administratorDashboard' element={<AdminDashboard></AdminDashboard>}/>
+      <Route path='/svePorudzbineAdmin' element={<AdminSvePorudzbine></AdminSvePorudzbine>}/>
+      <Route path='/verifikacija' element={<AdminVerifikacija></AdminVerifikacija>}/>
 
     </Routes>
     </BrowserRouter>

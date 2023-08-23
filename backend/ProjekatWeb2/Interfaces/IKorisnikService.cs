@@ -10,7 +10,7 @@ namespace ProjekatWeb2.Interfaces
         Task<IspisDto> Login(LoginDto loginKorisnikDto);
         Task<IspisDto> Registration(KorisnikDto registerKorisnik);
         Task<KorisnikDto> GetKorisnik(long id);
-        Task<IEnumerable<KorisnikDto>> GetAllKorisnici();
+        Task<List<KorisnikDto>> GetAllKorisnici();
         Task<KorisnikDto> UpdateKorisnik(long id, KorisnikDto korisnikDto);
         Task DeleteKorisnik(long id);
         Task<List<KorisnikDto>> GetProdavci();

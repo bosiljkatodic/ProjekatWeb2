@@ -20,7 +20,7 @@ const DetaljiPorudzbine = () => {
   
     const prodavac = JSON.parse(sessionStorage.getItem('korisnik'));
     const prodavacId = prodavac.id;
-    
+
     const navigate = useNavigate();
   
     useEffect(() => {
@@ -46,6 +46,9 @@ const DetaljiPorudzbine = () => {
       }else if(korisnik.tipKorisnika === 'Prodavac'){
         navigate('/prodavacNovePorudzbine')
       }
+     else if(korisnik.tipKorisnika === 'Administrator'){
+      navigate('/svePorudzbineAdmin')
+    }
       /*else if(korisnik.tipKorisnika === 'Prodavac'){
         const pathname = window.location.pathname;
         const redirectionComponent = pathname.split("/")[1];

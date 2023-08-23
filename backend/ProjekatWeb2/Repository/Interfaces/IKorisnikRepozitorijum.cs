@@ -7,7 +7,7 @@ namespace ProjekatWeb2.Repository.Interfaces
         Task AddKorisnik(Korisnik korisnik);
         Task<Korisnik> GetKorisnikById(long id);
         Task<Korisnik> GetKorisnikByEmail(string email);
-        Task<IEnumerable<Korisnik>> GetAllKorisnici();
+        Task<List<Korisnik>> GetAllKorisnici();
         Task UpdateKorisnik(Korisnik korisnik);
         Task DeleteKorisnikById(long id);
         Task<List<Korisnik>> SviProdavci();

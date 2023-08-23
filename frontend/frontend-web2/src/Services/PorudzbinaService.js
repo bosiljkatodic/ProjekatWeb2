@@ -166,3 +166,30 @@ export const GetArtiklePorudzbineProdavca = async (id, prodavacId, token) => {
       throw new Error('Greska prilikom dobavljanja prethodnih porudzbina prodavca.');
     }
   };
+
+  
+export const GetAllPorudzbine = async (token) => {
+    try{
+        const {data} = await axios.get(
+            `${baseUrl}/orders`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                }, 
+                withCredentials: true
+            }
+        );
+        const svePorudzbine = [];
+        for(var i = 0; i < data.length; i++){
+            const porudzbina = new PorudzbinaModel(data[i]);
+            porudzbina.addAllArtiklePorudzbine(data[i].elementiPorudzbine);
+            svePorudzbine.push(porudzbina);
+        }
+        return data;
+    }catch(err){
+        console.log(err);
+        alert("Nesto se desilo prilikom dobavljanja informacija o svim porudzbinama")
+        return null;
+    }
+}

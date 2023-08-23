@@ -25,6 +25,20 @@ namespace ProjekatWeb2.Controllers
             return Ok(await _korisnikService.AddKorisnik(korisnik));
         }
 
+        // GET: api/users
+        [HttpGet]
+        public async Task<ActionResult<Korisnik>> GetAllKorisnici()
+        {
+            List<KorisnikDto> korisnici = new List<KorisnikDto>();
+             korisnici =  await _korisnikService.GetAllKorisnici();
+            if (korisnici == null)
+            {
+                return NotFound("Ne postoje korisnici");
+            }
+
+            return Ok(korisnici);
+        }
+
         // GET: api/users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Korisnik>> GetKorisnik(long id)
