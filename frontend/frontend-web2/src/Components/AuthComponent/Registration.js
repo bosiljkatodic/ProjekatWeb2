@@ -28,9 +28,22 @@ import { RegisterUser } from "../../Services/KorisnikService";
 import jwt_decode from 'jwt-decode';
 import imageUrl from "../../Images/camera.png";
 
+import {prijavaPrekoGoogle} from '../../Services/KorisnikService';
+import GoogleLogin from "react-google-login";
+import { gapi } from "gapi-script";
+
+
 const defaultTheme = createTheme();
 
 const Registration = ({handleKorisnikInfo}) => {
+
+  gapi.load("client:auth2", () => {
+    gapi.client.init({
+      clientId:
+        "499389954872-f3pheoj58rf46vvq8reuglnsq77llga5.apps.googleusercontent.com",
+      plugin_name: "chat",
+    });
+  });
 
     const [korisnickoIme, setKorisnickoIme] = useState('');
     const [email, setEmail] = useState('');
@@ -135,7 +148,35 @@ const Registration = ({handleKorisnikInfo}) => {
             sessionStorage.setItem('isAuth', JSON.stringify(false));
             handleKorisnikInfo(false);
         }    
-    };   
+    };  
+    
+    
+    const responseGoogle = (response) => {
+      console.log(response);
+      handlePrijava(response);
+  }
+
+    const handlePrijava = async (data) => {
+      try {
+        const LogObject={idToken:data.tokenId};
+
+        const response = await prijavaPrekoGoogle(LogObject);
+        localStorage.setItem('token', response.data);
+        sessionStorage.setItem('isAuth', JSON.stringify(true));
+        sessionStorage.setItem('token', response.token);
+        sessionStorage.setItem('korisnik', JSON.stringify(response.korisnikDto));
+        handleKorisnikInfo(true);
+        alert("Uspesno ste se ulogovali preko Google naloga.");
+        navigate('/kupacDashboard');      
+       
+      } catch (error) {
+        console.log(error);
+        sessionStorage.setItem("isAuth", false);
+        handleKorisnikInfo(false); //prvo se postave podaci pa se re reneruje
+        setError([error.message]);
+      }
+    };
+
 
     return (
         <ThemeProvider theme={defaultTheme}>
@@ -293,7 +334,20 @@ const Registration = ({handleKorisnikInfo}) => {
               >
                 Registruj me
               </Button>
+              <br/>
+                  
+              <GoogleLogin
+              clientId="499389954872-f3pheoj58rf46vvq8reuglnsq77llga5"
+              buttonText="Registruj se putem Google naloga"
+              onSuccess={responseGoogle}
+              onFailure={responseGoogle}
+              cookiePolicy={'single_host_origin'}
+              scope="profile"
+              />
+              <br/>
+              <br/>
               <Link to="/login"> Već imate nalog? Prijavi se </Link>
+
             </Box>
           </Box>
         </Container>

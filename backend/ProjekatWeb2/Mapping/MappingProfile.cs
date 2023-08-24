@@ -14,6 +14,7 @@ namespace ProjekatWeb2.Mapping
             CreateMap<Porudzbina, PorudzbinaDto>().ReverseMap();
             CreateMap<Korisnik, UpdateKorisnikDto>().ReverseMap();
             CreateMap<Porudzbina, PregledPorudzbineDto>().ReverseMap();
+            CreateMap<Korisnik, GoogleLoginDto>().ReverseMap();
 
             //dodaj
         }

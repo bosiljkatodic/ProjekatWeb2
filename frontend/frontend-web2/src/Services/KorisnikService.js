@@ -5,6 +5,21 @@ import KorisnikModel from '../Models/KorisnikModel';
 const baseUrl = process.env.REACT_APP_API_BACKEND;
 
 
+export const prijavaPrekoGoogle = async (UserLoginDto) => {
+    try {
+  
+      const {data} = await axios.post(`${baseUrl}/users/loginExternal`, UserLoginDto);
+  
+      const odgovor = new IspisModel(data);
+      return odgovor;
+    }
+    catch(error)
+    {
+      console.error(error);
+      throw new Error('Greška prilikom prijave korisnika preko Google naloga.');
+    }
+  };
+
 export const LoginUser = async (email, lozinka) => {
     //const url_login = "users/login";
 

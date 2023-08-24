@@ -15,11 +15,23 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { LoginUser } from "../../Services/KorisnikService";
 import jwt_decode from 'jwt-decode';
+import { gapi } from "gapi-script";
+
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import {prijavaPrekoGoogle} from '../../Services/KorisnikService';
+import GoogleLogin from "react-google-login";
 
 const defaultTheme = createTheme();
 
 const Login = ({handleKorisnikInfo}) => {
-    
+
+  gapi.load("client:auth2", () => {
+    gapi.client.init({
+      clientId:
+        "499389954872-f3pheoj58rf46vvq8reuglnsq77llga5.apps.googleusercontent.com",
+      plugin_name: "chat",
+    });
+  });
 
     const[email, setEmail] = useState('');
     const[lozinka, setLozinka] = useState('');
@@ -83,6 +95,33 @@ const Login = ({handleKorisnikInfo}) => {
       
     }
 
+    const responseGoogle = (response) => {
+      console.log(response);
+      handlePrijava(response);
+  }
+
+    const handlePrijava = async (data) => {
+      try {
+        const LogObject={idToken:data.tokenId};
+
+        const response = await prijavaPrekoGoogle(LogObject);
+        localStorage.setItem('token', response.data);
+        sessionStorage.setItem('isAuth', JSON.stringify(true));
+        sessionStorage.setItem('token', response.token);
+        sessionStorage.setItem('korisnik', JSON.stringify(response.korisnikDto));
+            handleKorisnikInfo(true);
+            alert("Uspesno ste se ulogovali preko Google naloga.");
+            navigate('/kupacDashboard');      
+       
+      } catch (error) {
+        console.log(error);
+        sessionStorage.setItem("isAuth", false);
+        handleKorisnikInfo(false); //prvo se postave podaci pa se re reneruje
+        setError([error.message]);
+      }
+    };
+    
+
     return (
             <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs">
@@ -135,6 +174,16 @@ const Login = ({handleKorisnikInfo}) => {
                     Log In
                   </Button>
                   
+              <GoogleLogin
+              clientId="499389954872-f3pheoj58rf46vvq8reuglnsq77llga5"
+              buttonText="Uloguj se putem Google naloga"
+              onSuccess={responseGoogle}
+              onFailure={responseGoogle}
+              cookiePolicy={'single_host_origin'}
+              scope="profile"
+              />
+              <br/>
+              <br/>
                   <Link to="/registration"> Nemate nalog? Registruj se </Link>
                   <div id="signInDiv"></div>
                 </Box>

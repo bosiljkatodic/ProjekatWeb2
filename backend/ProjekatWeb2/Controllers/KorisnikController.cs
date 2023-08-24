@@ -13,10 +13,13 @@ namespace ProjekatWeb2.Controllers
     {
         private readonly IKorisnikService _korisnikService;
         private readonly IEmailService _emailService;
+        //private readonly ILoginService _loginService;
+
         public KorisnikController(IKorisnikService korisnikService, IEmailService emailService)
         {
             _korisnikService = korisnikService;
             _emailService = emailService;
+            //_loginService = loginService;
         }
 
         [HttpPost]
@@ -50,6 +53,22 @@ namespace ProjekatWeb2.Controllers
             }
 
             return Ok(korisnik);
+        }
+
+        [HttpPost("loginExternal")]
+        //[AllowAnonymous]
+        public async Task<IActionResult> GoogleLogin([FromBody] ExternalRegister googleToken)
+        {
+            try
+            {
+                IspisDto rezultatPrijave = await _korisnikService.LoginGoogle(googleToken);
+
+                return Ok(rezultatPrijave);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost("login")]
@@ -103,6 +122,7 @@ namespace ProjekatWeb2.Controllers
         {
             return Ok(await _korisnikService.GetProdavci());
         }
+
 
         [HttpPut("verifyProdavca/{id}")]
         //[Authorize(Roles = "administrator")]

@@ -16,7 +16,7 @@ namespace ProjekatWeb2.Interfaces
         Task<List<KorisnikDto>> GetProdavci();
         Task<List<KorisnikDto>> VerifyProdavac(long id, string statusVerifikacije);
 
-
+        Task<IspisDto> LoginGoogle(ExternalRegister googleToken);
 
     }
 }

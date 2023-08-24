@@ -8,9 +8,11 @@ using ProjekatWeb2.Interfaces;
 using ProjekatWeb2.Models;
 using ProjekatWeb2.Repository;
 using ProjekatWeb2.Repository.Interfaces;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using static System.Collections.Specialized.BitVector32;
 
 namespace ProjekatWeb2.Services
 {
@@ -19,12 +21,15 @@ namespace ProjekatWeb2.Services
         private readonly IMapper _mapper;
         private readonly IKorisnikRepozitorijum _korisnikRepozitorijum;
         private readonly IConfigurationSection _secretKey;
+        private readonly IAuthService _authService;
 
-        public KorisnikService(IKorisnikRepozitorijum korisnikRepozitorijum, IMapper mapper, IConfiguration configuration)
+
+        public KorisnikService(IKorisnikRepozitorijum korisnikRepozitorijum, IAuthService authService, IMapper mapper, IConfiguration configuration)
         {
             _korisnikRepozitorijum = korisnikRepozitorijum;
             _mapper = mapper;
             _secretKey = configuration.GetSection("SecretKey");
+            _authService = authService;
         }
 
         public async Task<KorisnikDto> AddKorisnik(KorisnikDto newKorisnikDto)
@@ -35,7 +40,9 @@ namespace ProjekatWeb2.Services
         
             return _mapper.Map<KorisnikDto>(newKorisnik);
         }
+
         
+
         public async Task<IspisDto> Login(LoginDto loginKorisnikDto)
         {
             Korisnik loginKorisnik = new Korisnik();
@@ -263,6 +270,66 @@ namespace ProjekatWeb2.Services
             return _mapper.Map<List<KorisnikDto>>(prodavci);
         }
 
+        public async Task<IspisDto> LoginGoogle(ExternalRegister googleToken)
+        {
+            GoogleLoginDto socialInfo;
+
+            socialInfo = await _authService.VerifyGoogleToken(googleToken);
+
+            if (socialInfo == null)
+                return null;
+
+            Korisnik korisnik = await _korisnikRepozitorijum.GetKorisnikByEmail(socialInfo.Email);
+
+            if (korisnik == null)
+            {
+                korisnik = new Korisnik()
+                {
+                    Email = socialInfo.Email,
+                    KorisnickoIme = socialInfo.Email.Substring(0, socialInfo.Email.IndexOf("@")),
+                    Ime = socialInfo.Ime,
+                    Prezime = socialInfo.Prezime,
+                    Lozinka = socialInfo.Id,
+                    DatumRodjenja = DateTime.Now, //Because user might have made this data private on account
+                    TipKorisnika = TipKorisnika.Kupac,
+                    Adresa = socialInfo.Adresa,
+                    Slika = socialInfo.Slika
+                };
+                if (korisnik.Slika == null)
+                {
+                    korisnik.Slika = "slika";
+                }
+                if (korisnik.Adresa == null)
+                {
+                    korisnik.Adresa = "adresa";
+                }
+                await _korisnikRepozitorijum.AddKorisnik(korisnik);
+
+            }
+
+            List<Claim> claims = new List<Claim>();
+           
+            if (korisnik.TipKorisnika == TipKorisnika.Kupac)
+                claims.Add(new Claim(ClaimTypes.Role, "kupac"));
+
+
+
+            SymmetricSecurityKey secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.Value));
+            SigningCredentials signInCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+            JwtSecurityToken tokenOptions = new JwtSecurityToken(
+                issuer: "http://localhost:7273",
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(50),
+                signingCredentials: signInCredentials
+                );
+
+            string token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+            KorisnikDto korisnikDto = _mapper.Map<KorisnikDto>(korisnik);
+
+            IspisDto ispis = new IspisDto(token, korisnikDto, "Uspesno ste se logovali na sistem");
+            return ispis;
+
+        }
     }
 }
 
