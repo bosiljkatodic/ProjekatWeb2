@@ -25,7 +25,7 @@ function App() {
 const [isAuth, setIsAuth] = useState(false);
 const [tipKorisnika, setTipKorisnika] = useState('');
 const [statusVerifikacije, setStatusVerifikacije] = useState('');
-const [isKorisnikInfoGot, setIsKorisnikInfoGot] = useState(false);  //ovo govori da li smo dobili podatke o korisniku
+const [isKorisnikInfoGot, setIsKorisnikInfoGot] = useState(false);  //da li smo dobili podatke o korisniku
 
 useEffect(() => {
   const getAuth = () => {
@@ -38,7 +38,7 @@ useEffect(() => {
   }
   getAuth();
 }, [isKorisnikInfoGot]); //kada dobijemo ove podatke, ova funkcija ce se rerenderovati i onda ce se azurirati stanja
-                          //na taj nacin izqazvacemo ponovno azuriranje stranice i onda navbara, nadam se da je tako
+                          //na taj nacin izqazvacemo ponovno azuriranje stranice i onda navbara
 
 const handleKorisnikInfo = (gotKorisnikInfo) => {
   setIsKorisnikInfoGot(gotKorisnikInfo);

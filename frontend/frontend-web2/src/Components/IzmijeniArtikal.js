@@ -81,11 +81,11 @@ export default function IzmijeniArtikal() {
       {!loading && (
         <div className="card">
           <form className="ui form" onSubmit={handleSubmit}>
-            <h2 className="ui center aligned header">Izmena artikla</h2>
+            <h2 className="ui center aligned header">Izmjena artikla</h2>
             <UserImage slika={fotografija} setSlika={setFotografija}></UserImage>
               {error && fotografija.length === 0 ? (
                 <div className="ui pointing red basic label">
-                  Morate uneti fotografiju
+                  Morate izabrati fotografiju
                 </div>
               ) : null}
             <div className="field">
@@ -99,13 +99,13 @@ export default function IzmijeniArtikal() {
               />
               {error && naziv.length === 0 ? (
                 <div className="ui pointing red basic label">
-                  Morate uneti naziv artikla
+                  Morate unijeti naziv artikla
                 </div>
               ) : null}
             </div>
             <div className="two fields">
               <div className="field">
-                <label>Cena artikla</label>
+                <label>Cijena artikla</label>
                 <input
                   type="number"
                   step="any"
@@ -116,7 +116,7 @@ export default function IzmijeniArtikal() {
                 />
                 {(error && cijena === 0) || (error && cijena === "") ? (
                   <div className="ui pointing red basic label">
-                    Morate cenu artikla
+                    Morate unijeti cijenu artikla
                   </div>
                 ) : null}
               </div>
@@ -132,7 +132,7 @@ export default function IzmijeniArtikal() {
                 />
                 {(error && Math.floor(kolicina) === 0) || ( error && cijena === "") ? (
                   <div className="ui pointing red basic label">
-                    Morate uneti kolicinu artikla
+                    Morate unijeti kolicinu artikla
                   </div>
                 ) : null}
               </div>
@@ -148,12 +148,12 @@ export default function IzmijeniArtikal() {
               />
               {error && opis.length === 0 ? (
                 <div className="ui pointing red basic label">
-                  Morate opis artikla
+                  Morate unijeti opis artikla
                 </div>
               ) : null}
             </div>
             <Button variant="contained" type="submit">
-              Izmenite artikal
+              Izmijenite artikal
             </Button>
           </form>
         </div>
