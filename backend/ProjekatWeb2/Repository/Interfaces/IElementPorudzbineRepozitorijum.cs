@@ -6,5 +6,7 @@ namespace ProjekatWeb2.Repository.Interfaces
     {
         Task AddElementPorudzbine(ElementPorudzbine elementPorudzbine);
         Task<IEnumerable<ElementPorudzbine>> AllElementiPorudzbina();
+        Task DeleteElementiPorudzbine(long id);
+
     }
 }

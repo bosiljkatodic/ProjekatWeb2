@@ -5,7 +5,7 @@ const Timer = ({ targetDate }) => {
   const [days, hours, minutes, seconds] = useCountdown(targetDate);
 
   if (days + hours + minutes + seconds <= 0) {
-    return <div>Porudzbina je dostavljena</div>; 
+    return <div>Porudžbina je dostavljena</div>; 
   } else {
     return (
         <div>

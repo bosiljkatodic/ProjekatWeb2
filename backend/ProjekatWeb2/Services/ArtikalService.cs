@@ -14,12 +14,14 @@ namespace ProjekatWeb2.Services
         private readonly IMapper _mapper;
         private readonly IArtikalRepozitorijum _artikalRepozitorijum;
         private readonly IKorisnikRepozitorijum _korisnikRepozitorijum;
+        private readonly IElementPorudzbineRepozitorijum _elementPorudzbineRepozitorijum;
 
-        public ArtikalService(IMapper mapper, IArtikalRepozitorijum artikalRepozitorijum, IKorisnikRepozitorijum korisnikRepozitorijum)
+        public ArtikalService(IMapper mapper,IElementPorudzbineRepozitorijum elementPorudzbineRepozitorijum, IArtikalRepozitorijum artikalRepozitorijum, IKorisnikRepozitorijum korisnikRepozitorijum)
         {
             _mapper = mapper;
             _artikalRepozitorijum = artikalRepozitorijum;
             _korisnikRepozitorijum = korisnikRepozitorijum;
+            _elementPorudzbineRepozitorijum = elementPorudzbineRepozitorijum;
         }
 
         public async Task<ArtikalDto> AddArtikal(ArtikalDto newArtikalDto)
@@ -69,7 +71,8 @@ namespace ProjekatWeb2.Services
             }
             await _artikalRepozitorijum.DeleteArtikal(deleteArtikal);
 
-           // _dbContext.ArtikliUPorudzbinama.RemoveRange(_dbContext.ArtikliUPorudzbinama.Where(x => x.ArtikalId == deleteArtikal.Id));
+
+            await _elementPorudzbineRepozitorijum.DeleteElementiPorudzbine(deleteArtikal.Id);
 
             return true;
         }

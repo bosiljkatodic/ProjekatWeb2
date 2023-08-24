@@ -13,13 +13,11 @@ namespace ProjekatWeb2.Controllers
     {
         private readonly IKorisnikService _korisnikService;
         private readonly IEmailService _emailService;
-        //private readonly ILoginService _loginService;
 
         public KorisnikController(IKorisnikService korisnikService, IEmailService emailService)
         {
             _korisnikService = korisnikService;
             _emailService = emailService;
-            //_loginService = loginService;
         }
 
         [HttpPost]
@@ -56,7 +54,6 @@ namespace ProjekatWeb2.Controllers
         }
 
         [HttpPost("loginExternal")]
-        //[AllowAnonymous]
         public async Task<IActionResult> GoogleLogin([FromBody] ExternalRegister googleToken)
         {
             try
@@ -117,7 +114,7 @@ namespace ProjekatWeb2.Controllers
         }
 
         [HttpGet("getProdavci")]
-        //[Authorize(Roles = "administrator")]
+        [Authorize(Roles = "administrator")]
         public async Task<IActionResult> GetProdavci()
         {
             return Ok(await _korisnikService.GetProdavci());
@@ -125,7 +122,7 @@ namespace ProjekatWeb2.Controllers
 
 
         [HttpPut("verifyProdavca/{id}")]
-        //[Authorize(Roles = "administrator")]
+        [Authorize(Roles = "administrator")]
         public async Task<IActionResult> VerifyProdavca(long id, [FromBody] string statusVerifikacije)
         {
             List<KorisnikDto> verifiedProdavci = await _korisnikService.VerifyProdavac(id, statusVerifikacije);

@@ -27,6 +27,16 @@ namespace ProjekatWeb2.Repository
 
         public async Task<IEnumerable<Porudzbina>> AllKupacPorudzbine(long id)
         {
+            var korisnik = await _dbContext.Korisnici.Include(x => x.ArtikliProdavac).FirstOrDefaultAsync(k => k.Id == id);
+            var porudzbine = await _dbContext.Porudzbine.Where(p => p.KorisnikId == id).Include(x => x.ElementiPorudzbine).ToListAsync();
+            foreach(var porudzbina in porudzbine)
+            {
+                if (porudzbina.ElementiPorudzbine == null || porudzbina.ElementiPorudzbine.Count == 0)
+                {
+                    DeletePorudzbina(porudzbina);
+                }
+            }
+
             return await _dbContext.Porudzbine
             .Where(p => p.KorisnikId == id).Include(x => x.ElementiPorudzbine)
             .ToListAsync();

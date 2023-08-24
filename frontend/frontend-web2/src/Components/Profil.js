@@ -102,7 +102,7 @@ const Profil = () => {
     const data = await IzmijeniProfil(updatedKorisnikJSON, id, token)
     if (data !== null) {
       sessionStorage.setItem("korisnik", JSON.stringify(data));
-      alert("Uspesno ste izmenili podatke");
+      alert("Uspješno ste izmijenili podatke.");
       redirectTo(tipKorisnika);
     }
   };
@@ -121,7 +121,7 @@ const Profil = () => {
           >
             
             <Typography component="h1" variant="h5">
-             Informacije o korisniku
+             Podaci o korisniku
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                 <Grid item xs={12}>

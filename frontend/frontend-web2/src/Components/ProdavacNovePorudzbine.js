@@ -42,7 +42,7 @@ const ProdavacNovePorudzbine = () => {
 
     return (
         <div className="verification-container">
-            <h2>Nove porudzbine koje sadrze moje artikle</h2>
+            <h2>Nove porudžbine koje sadrže moje artikle</h2>
             {loading && (
             <div className="loader-container">
               <div className="ui active inverted dimmer">
@@ -52,14 +52,14 @@ const ProdavacNovePorudzbine = () => {
             )}
             {!loading && (
             
-            <table className="ui fixed blue celled table">
+            <table className="ui fixed blue celled table" width={1000} style={{marginLeft: 16 + 'em'}}>
                 <thead>
                     <tr>
-                        <th>Id porudzbine</th>
+                        <th>Id porudžbine</th>
                         <th>Adresa dostave</th>
-                        <th>Cijena porudzbine</th>
+                        <th>Cijena porudžbine</th>
                         <th>Preostalo vrijeme do isporuke</th>
-                        <th>Detalji o elementima porudzbine</th>
+                        <th>Detalji o elementima porudžbine</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,7 +72,7 @@ const ProdavacNovePorudzbine = () => {
                                 {prodavcevaNovaPorudzbina.adresaDostave}
                             </td>
                             <td className="center aligned"> 
-                                {prodavcevaNovaPorudzbina.cijena}
+                                {prodavcevaNovaPorudzbina.cijena} dinara
                             </td>
                             <td>
                                 <Timer targetDate={prodavcevaNovaPorudzbina.vrijemeDostave}/>

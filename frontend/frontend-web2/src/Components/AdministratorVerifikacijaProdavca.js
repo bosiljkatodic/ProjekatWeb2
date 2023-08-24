@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { GetProdavce, VerifyProdavca } from "../Services/KorisnikService";
+import { Button, ButtonGroup } from "@mui/material";
 
 const AdminVerifikacija = () => {
     
@@ -27,14 +28,26 @@ const AdminVerifikacija = () => {
     const handlePrikazDugmadi = (prodavac) => {
         if(prodavac.verifikacijaProdavca === 'UProcesu'){
             return <td className="center aligned">
-                        <button className="ui green labeled icon button" value={'Prihvacen'} id={prodavac.id} onClick={(e) => handleClick(e)}>
+                        <ButtonGroup orientation="vertical">
+                        <Button 
+                            variant="contained"
+                            className="ui green labeled icon button"
+                            value={'Prihvacen'} 
+                            id={prodavac.id} 
+                            onClick={(e) => handleClick(e)}>
                             <i className="check icon"></i>
                             Prihvati zahtjev
-                        </button>
-                        <button className="ui red labeled icon button" value={'Odbijen'} id={prodavac.id} onClick={(e) => handleClick(e)}>
+                        </Button>
+                        <Button
+                            variant="contained"
+                            className="ui red labeled icon button" 
+                            value={'Odbijen'} 
+                            id={prodavac.id} 
+                            onClick={(e) => handleClick(e)}>
                             <i className="x icon"></i>
                             Odbij zahtjev
-                        </button>                         
+                        </Button>
+                        </ButtonGroup>                         
                     </td> 
         }
         else if (prodavac.verifikacijaProdavca === 'Prihvacen'){
@@ -60,6 +73,7 @@ const AdminVerifikacija = () => {
 
     return (
         <div className="verification-container">
+            <h2>Prikaz svih prodavaca</h2>
             {loading && 
             <div className="loader-container">
                 <div className="ui active inverted dimmer">
@@ -71,8 +85,9 @@ const AdminVerifikacija = () => {
                 
             }
             {!loading && (  
-                <div>
-                    <h2>Prikaz svih prodavaca</h2>
+                <div style={{marginLeft: 30 + 'em'}}>
+                    
+                    
                     <table className="ui blue celled table">
                         <thead>
                             <tr>
@@ -87,8 +102,8 @@ const AdminVerifikacija = () => {
                                     <td>
                                         <h4 className="ui image header">
                                             <img className="ui mini rounded image"
-                                                    width="200"
-                                                    height="250"
+                                                    width="120"
+                                                    height="150"
                                                     src={prodavac.slika}></img>
                                             <div className="content">
                                                 {prodavac.korisnickoIme}
@@ -105,6 +120,7 @@ const AdminVerifikacija = () => {
                             ))}
                         </tbody>
                     </table>  
+                    
                 </div> 
             )}
         </div>

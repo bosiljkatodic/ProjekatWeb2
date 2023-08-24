@@ -58,12 +58,9 @@ const Registration = ({handleKorisnikInfo}) => {
     const [cijenaDostave, setCijenaDostave] = useState(0);
     const [slika, setSlika] = useState(imageUrl);
 
-    //const [googleUser, setGoogleUser] = useState({});
     const navigate = useNavigate();
 
     const[error, setError] = useState(false);
-
-    //const[google, setGoogle] = useState(window.google);
     
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -136,11 +133,12 @@ const Registration = ({handleKorisnikInfo}) => {
 
         const data = await RegisterUser(korisnikJSON);
         if(data !== null){
+            sessionStorage.clear();
             sessionStorage.setItem('isAuth', JSON.stringify(true));
             sessionStorage.setItem('token', data.token)
             sessionStorage.setItem('korisnik', JSON.stringify(data.korisnikDto));
             handleKorisnikInfo(true); //prvo se postave podaci pa se re reneruje
-            alert("Uspesno ste se registrovali");
+            alert("Uspješna registracija.");
             redirectTo(tipKorisnika);
 
         } else {
@@ -166,7 +164,7 @@ const Registration = ({handleKorisnikInfo}) => {
         sessionStorage.setItem('token', response.token);
         sessionStorage.setItem('korisnik', JSON.stringify(response.korisnikDto));
         handleKorisnikInfo(true);
-        alert("Uspesno ste se ulogovali preko Google naloga.");
+        alert("Uspješno ste se prijavili preko Google naloga.");
         navigate('/kupacDashboard');      
        
       } catch (error) {
@@ -332,7 +330,7 @@ const Registration = ({handleKorisnikInfo}) => {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Registruj me
+                Registracija
               </Button>
               <br/>
                   
@@ -346,7 +344,7 @@ const Registration = ({handleKorisnikInfo}) => {
               />
               <br/>
               <br/>
-              <Link to="/login"> Već imate nalog? Prijavi se </Link>
+              <Link to="/login"> Već imate nalog? Prijavite se </Link>
 
             </Box>
           </Box>

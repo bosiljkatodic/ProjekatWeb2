@@ -26,7 +26,7 @@ namespace ProjekatWeb2.Controllers
         }
 
         [HttpPost("addArtikal")]
-        //[Authorize(Roles = "prodavac")]
+        [Authorize(Roles = "prodavac")]
         public async Task<IActionResult> AddArtikal([FromBody] ArtikalDto artikal)
         {
             ArtikalDto newArtikalDto = await _artikalService.AddArtikal(artikal);
@@ -39,7 +39,7 @@ namespace ProjekatWeb2.Controllers
 
 
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "prodavac")]
+        [Authorize(Roles = "prodavac")]
         public async Task<IActionResult> DeleteArtikal(long id)
         {
             bool response = await _artikalService.DeleteArtikal(id);
@@ -58,7 +58,7 @@ namespace ProjekatWeb2.Controllers
         }
 
         [HttpGet("{id}")]
-        //[Authorize(Roles = "prodavac")]
+        [Authorize(Roles = "prodavac")]
         public async Task<IActionResult> GetArtikalById(long id) 
         {
             ArtikalDto artikal = await _artikalService.GetArtikalById(id);
@@ -70,7 +70,7 @@ namespace ProjekatWeb2.Controllers
         }
 
         [HttpGet("getProdavceveArtikle/{id}")]
-        //[Authorize(Roles = "prodavac")]
+        [Authorize(Roles = "prodavac")]
         public async Task<IActionResult> GetProdavceveArtikle(long id) 
         {
             List<ArtikalDto> prodavceviArtikli = await _artikalService.GetProdavceveArtikle(id);
@@ -83,7 +83,7 @@ namespace ProjekatWeb2.Controllers
 
 
         [HttpPut("{id}")]
-        //[Authorize(Roles = "prodavac")]
+        [Authorize(Roles = "prodavac")]
         public async Task<IActionResult> ChangeArtikal(long id, [FromBody] ArtikalDto artikal)
         {
             ArtikalDto updateArtikal = await _artikalService.UpdateArtikal(id, artikal);

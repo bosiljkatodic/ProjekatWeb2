@@ -43,7 +43,7 @@ const ProdavacNoviArtikal = () => {
         if(data !== null){
             
             setInputsToEmpty();
-            alert("Artikal je uspjesno dodat")
+            alert("Artikal je uspješno dodat.")
             console.log(data)
         }else{
             setInputsToEmpty();
@@ -55,7 +55,7 @@ const ProdavacNoviArtikal = () => {
             <form className="ui form" onSubmit={handleSubmit} >
                 <h2 className="ui center aligned header">Kreiraj novi artikal</h2>
                 <UserImage slika={fotografija} setSlika={setFotografija}></UserImage>
-                {error && fotografija.length === 0 ? <div className="ui pointing red basic label">Morate uneti naziv artikla</div> : null}
+                {error && fotografija.length === 0 ? <div className="ui pointing red basic label">Morate izabrati fotografiju.</div> : null}
                 <div className="field">
                     <h4>Naziv artikla</h4>
                     <input  type="text" 
@@ -64,7 +64,7 @@ const ProdavacNoviArtikal = () => {
                             value={naziv}
                             onChange={(e) => setNaziv(e.target.value)}
                             />
-                    {error && naziv.length === 0 ? <div className="ui pointing red basic label">Morate uneti naziv artikla</div> : null}
+                    {error && naziv.length === 0 ? <div className="ui pointing red basic label">Morate unijeti naziv artikla.</div> : null}
                 </div>
                 <div className="two fields">
                     <div className="field">
@@ -76,10 +76,10 @@ const ProdavacNoviArtikal = () => {
                                 onChange={(e) => setCijena(e.target.value)}
                                 placeholder="Cijena artikla"
                                 />
-                        {(error && cijena === 0) || (error && cijena === "") ? <div className="ui pointing red basic label">Morate cenu artikla</div> : null}
+                        {(error && cijena === 0) || (error && cijena === "") ? <div className="ui pointing red basic label">Morate unijeti cijenu artikla.</div> : null}
                     </div>
                     <div className="field">
-                        <h4>Kolicina artikla</h4>
+                        <h4>Količina artikla</h4>
                         <input  type="number"
                                 step="1"
                                 name="kolicina"
@@ -87,7 +87,7 @@ const ProdavacNoviArtikal = () => {
                                 onChange={(e) => setKolicina(e.target.value)}
                                 placeholder="Kolicina artikla"
                         />
-                        {(error && Math.floor(kolicina) === 0) || ( error && cijena === "") ? <div className="ui pointing red basic label">Morate uneti kolicinu artikla</div> : null}
+                        {(error && Math.floor(kolicina) === 0) || ( error && cijena === "") ? <div className="ui pointing red basic label">Morate unijeti količinu artikla.</div> : null}
                     </div>
                 </div>
                 <div className="field">
@@ -98,7 +98,7 @@ const ProdavacNoviArtikal = () => {
                               value={opis}
                               onChange={(e) => setOpis(e.target.value)}
                     /> 
-                    {error && opis.length === 0 ? <div className="ui pointing red basic label">Morate opis artikla</div> : null}
+                    {error && opis.length === 0 ? <div className="ui pointing red basic label">Morate unijeti opis artikla.</div> : null}
                 </div>
                 <Button variant="contained" type="submit">Dodaj artikal</Button>
             </form>

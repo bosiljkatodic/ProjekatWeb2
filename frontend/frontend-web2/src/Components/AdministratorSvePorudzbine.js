@@ -47,7 +47,7 @@ const AdminSvePorudzbine = () => {
     const handleTimer = (vrijemeDostave, statusPorudzbine) => {
         if(statusPorudzbine === 'Otkazano'){
           return <td className="center aligned positive">
-              Porudzbina je otkazana
+              Porudžbina je otkazana
           </td>
         }else{
           return<td className="center aligned positive">
@@ -59,19 +59,19 @@ const AdminSvePorudzbine = () => {
     return (
         <ThemeProvider theme={defaultTheme}>
                     <Typography component="h2" variant="h6" color="primary" gutterBottom>
-             Sve porudzbine
+             Sve porudžbine
             </Typography>
 
         <Box sx={{ display: 'flex' }}>
             <Table size="small">
             <TableHead>
                 <TableRow>                
-                    <TableCell><h4>Id porudzbine</h4></TableCell>
-                    <TableCell><h4>Artikli u porudzbini</h4></TableCell>
+                    <TableCell><h4>Id porudžbine</h4></TableCell>
+                    <TableCell><h4>Artikli u porudžbini</h4></TableCell>
                     <TableCell><h4>Adresa dostave</h4></TableCell>
-                    <TableCell><h4>Cijena porudzbine</h4></TableCell>
+                    <TableCell><h4>Cijena porudžbine</h4></TableCell>
                     <TableCell><h4>Vrijeme do isporuke</h4></TableCell>
-                    <TableCell><h4>Status porudzbine</h4></TableCell>
+                    <TableCell><h4>Status porudžbine</h4></TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>

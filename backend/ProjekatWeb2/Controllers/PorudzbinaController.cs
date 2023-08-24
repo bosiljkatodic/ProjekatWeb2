@@ -26,9 +26,8 @@ namespace ProjekatWeb2.Controllers
             _porudzbinaService = porudzbinaService;
         }
 
-        //izbaciti ovde add, jer je ovo crud operacija
         [HttpPost("addPorudzbina")]
-        //[Authorize(Roles = "kupac")]
+        [Authorize(Roles = "kupac")]
         public async Task<IActionResult> CreatePorudzbina([FromBody] PorudzbinaDto porudzbina)
         {
             PorudzbinaDto newPorudzbinaDto = await _porudzbinaService.AddPorudzbina(porudzbina);
@@ -37,6 +36,18 @@ namespace ProjekatWeb2.Controllers
                 return BadRequest("Postoji neki problem prilikom dodavanja porudzbine");
             }
             return Ok(newPorudzbinaDto);
+        }
+
+        [HttpPut("otkaziPorudzbinu/{id}")]
+        //[Authorize(Roles = "kupac")]
+        public async Task<IActionResult> OtkaziPorudzbine(long id, [FromBody] string statusVerifikacije) 
+        {
+            OtkaziPorudzbinuDto otkazanaPorudzbinaDto = await _porudzbinaService.OtkaziPorudzbinu(id, statusVerifikacije);
+            if (otkazanaPorudzbinaDto.PorudzbinaDto == null)
+            {
+                return BadRequest(otkazanaPorudzbinaDto);
+            }
+            return Ok(otkazanaPorudzbinaDto);
         }
 
         [HttpDelete("{id}")]
@@ -48,14 +59,14 @@ namespace ProjekatWeb2.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "administrator")]
+        [Authorize(Roles = "administrator")]
         public async Task<IActionResult> GetAllPorudzbine()
         {
             return Ok(await _porudzbinaService.GetAllPorudzbina());
         }
 
         [HttpGet("getKupcevePorudzbine/{id}")]
-        //[Authorize(Roles = "kupac")]
+        [Authorize(Roles = "kupac")]
         public async Task<IActionResult> GetKupcevePorudzbine(long id) // id kupca
         {
             List<PorudzbinaDto> korisnikovePorudzbineDto = await _porudzbinaService.GetKupcevePorudzbine(id);
@@ -80,7 +91,7 @@ namespace ProjekatWeb2.Controllers
         }
 
         [HttpGet("getProdavceveNovePorudzbine/{id}")]
-        //[Authorize(Roles = "prodavac")]
+        [Authorize(Roles = "prodavac")]
         public async Task<IActionResult> GetProdavceveNovePorudzbine(long id) //prodavcev id
         {
             List<PorudzbinaDto> prodavcevePorudzbine = await _porudzbinaService.GetProdavceveNovePorudzbine(id);
@@ -93,7 +104,7 @@ namespace ProjekatWeb2.Controllers
         }
 
         [HttpGet("getProdavcevePrethodnePorudzbine/{id}")]
-        //[Authorize(Roles = "prodavac")]
+        [Authorize(Roles = "prodavac")]
         public async Task<IActionResult> GetProdavcevePrethodnePorudzbine(long id) //prodavcev id
         {
             List<PorudzbinaDto> prodavcevePrethodnePorudzbineDto = await _porudzbinaService.GetProdavcevePrethodnePorudzbine(id);
@@ -106,41 +117,15 @@ namespace ProjekatWeb2.Controllers
         }
 
 
-        [HttpPut("otkaziPorudzbinu/{id}")]
-        //[Authorize(Roles = "kupac")]
-        public async Task<IActionResult> OtkaziPorudzbine(long id, [FromBody] string statusVerifikacije) //id kupca
-        {
-            OtkaziPorudzbinuDto otkazanaPorudzbinaDto = await _porudzbinaService.OtkaziPorudzbinu(id, statusVerifikacije);
-            if (otkazanaPorudzbinaDto.PorudzbinaDto == null)
-            {
-                return BadRequest(otkazanaPorudzbinaDto);
-            }
-            return Ok(otkazanaPorudzbinaDto);
-        }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> ChangePorudzbina(long id, [FromBody] PorudzbinaDto porudzbina)
         {
             return Ok(await _porudzbinaService.UpdatePorudzbina(id, porudzbina));
         }
-        /*
-        [HttpGet("{id}/artikliPorudzbine")]
-        //[Authorize(Roles = "Admin, Kupac")]
-        public async Task<IActionResult> DobaviArtikleZaPorudzbinu(long id)
-        {
-            List<Artikal> artikli = await _porudzbinaService.DobaviArtiklePorudzbine(id);
-
-            if (artikli.Count == 0)
-            {
-                return NotFound("Prazna");
-            }
-
-            return Ok(artikli);
-        }*/
-
 
         [HttpGet("{porudzbinaId}/artikliProdavca/{prodavacId}")]
-        //[Authorize(Roles = "Prodavac")]
+        [Authorize(Roles = "prodavac")]
         public async Task<IActionResult> DobaviArtiklePorudzbineZaProdavca(long porudzbinaId, long prodavacId)
         {
             List<ArtikalDto> artikli = await _porudzbinaService.DobaviArtiklePorudzbineZaProdavca(porudzbinaId, prodavacId);

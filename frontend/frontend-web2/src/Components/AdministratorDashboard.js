@@ -38,7 +38,7 @@ const AdminDashboard = () => {
     return(
         <ThemeProvider theme={defaultTheme}>
             <h2 className="ui blue center aligned header">
-            Uspješno ste ulogovani na sistem u ulozi administratora
+            Uspješno ste prijavljeni na sistem u ulozi administratora
             </h2>
             <Box sx={{ display: 'main' }}>
                 <Typography component="h2" variant="h5" color="primary">
@@ -51,7 +51,7 @@ const AdminDashboard = () => {
                             <TableCell><h4>Ime</h4></TableCell>
                             <TableCell><h4>Prezime</h4></TableCell>
                             <TableCell><h4>Email</h4></TableCell>
-                            <TableCell><h4>Korisnicko ime</h4></TableCell>
+                            <TableCell><h4>Korisničko ime</h4></TableCell>
                             <TableCell><h4>Adresa</h4></TableCell>
                             <TableCell><h4>Datum rodjenja</h4></TableCell>
                             <TableCell><h4>Tip korisnika</h4></TableCell>                           

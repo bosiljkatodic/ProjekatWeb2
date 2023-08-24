@@ -16,23 +16,36 @@ export default function KupacPorudzbina() {
 
   useEffect(() => {
     const ukupnaCijenaPorudzbine = () => {
-      var ceneDostaveArtikala = []; //u njega stavljam sve razlicite cene dostave jer ima razlicitih prodavaca
-      var ukupnaCijenaDostave = 0;
+      const cijeneDostavePoProdavcima = new Map(); // Mapa za čuvanje cijena dostave po prodavcima
       var ukupnaCijenaPorudzbine = 0;
+  
       for (let i = 0; i < izabraniArtikli.length; i++) {
-        if (!ceneDostaveArtikala.includes(izabraniArtikli[i].cijenaDostave)) {
-          //odredimo da li je zabelezena cijena dostave
-          ceneDostaveArtikala.push(izabraniArtikli[i].cijenaDostave); //ako nije ubaci je
-          ukupnaCijenaDostave += izabraniArtikli[i].cijenaDostave; //i dodaj na ukupnu cenu dostave
+        const artikal = izabraniArtikli[i];
+        
+        if (cijeneDostavePoProdavcima.has(artikal.prodavacId)) {
+          // Ako postoji, dodaj cijenu dostave na već postojeću
+          cijeneDostavePoProdavcima.set(
+            artikal.prodavacId,
+            cijeneDostavePoProdavcima.get(artikal.prodavacId) + artikal.cijenaDostave
+          );
+        } else {
+          // Ako ne postoji, postavi cijenu dostave za ovog prodavca
+          cijeneDostavePoProdavcima.set(artikal.prodavacId, artikal.cijenaDostave);
         }
-        ukupnaCijenaPorudzbine +=
-          izabraniArtikli[i].kolicina * izabraniArtikli[i].cijena; //saberi klasika, cijena artikla puta kolicina artikla
+  
+        ukupnaCijenaPorudzbine += artikal.kolicina * artikal.cijena;
       }
-      ukupnaCijenaPorudzbine += ukupnaCijenaDostave; //na to dodaj cenu dostave
+  
+      // Dodaj cijene dostave za svakog prodavca na ukupnu cijenu porudžbine
+      cijeneDostavePoProdavcima.forEach((cijenaDostave) => {
+        ukupnaCijenaPorudzbine += cijenaDostave;
+      });
+  
       setCijena(ukupnaCijenaPorudzbine);
     };
+  
     ukupnaCijenaPorudzbine();
-  }, [cijena]);
+  }, [izabraniArtikli]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -91,7 +104,7 @@ export default function KupacPorudzbina() {
             </div>
             <br />
             <h3 className="ui left aligned header">
-              Cijena porudzbine:
+              Cijena porudžbine:
               </h3>
                {cijena} dinara
             
@@ -126,7 +139,7 @@ export default function KupacPorudzbina() {
         <Button    
             variant="contained"
             type="submit">
-          Porucite
+          Poruči
         </Button>
       </form>
     </div>

@@ -49,20 +49,6 @@ const DetaljiPorudzbine = () => {
      else if(korisnik.tipKorisnika === 'Administrator'){
       navigate('/svePorudzbineAdmin')
     }
-      /*else if(korisnik.tipKorisnika === 'Prodavac'){
-        const pathname = window.location.pathname;
-        const redirectionComponent = pathname.split("/")[1];
-        
-        //ovde mozes da parsiras path name
-        if(redirectionComponent === 'prodavacPrethodnePorudzbine') {
-          navigate('/prodavacPrethodnePorudzbine');
-        } else if("prodavacNovePorudzbine"){
-          navigate('/prodavacNovePorudzbine');
-        }
-      }
-      else if(korisnik.tipKorisnika === 'Administrator'){
-        navigate('/adminSvePorudzbine');
-      }*/
     }
   
     return (
@@ -75,7 +61,7 @@ const DetaljiPorudzbine = () => {
           </div>
           )}
         {!loading && ( <><h1 className="ui block blue center aligned header">
-          Porudzbina broj 
+          Detalji porudžbine
         </h1>
         {porudzbina.id}
         <div className="field">
@@ -99,7 +85,7 @@ const DetaljiPorudzbine = () => {
             </div>
             <div className="field">
               <h3 className="ui blue center aligned header">
-                Datum i vrijeme porucivanja:{" "}
+                Datum i vrijeme poručivanja:{" "}
                 </h3>
                 {porudzbina.vrijemePorucivanja.toLocaleDateString()} u{" "}
                 {porudzbina.vrijemePorucivanja.toLocaleTimeString()}
@@ -116,7 +102,7 @@ const DetaljiPorudzbine = () => {
             <div className="field">
               <h3 className="ui blue center aligned header">
               
-                Cijena porudzbine: 
+                Cijena porudžbine: 
                 </h3>
                 {porudzbina.cijena} dinara
             </div>

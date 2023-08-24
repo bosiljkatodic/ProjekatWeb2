@@ -161,10 +161,23 @@ namespace ProjekatWeb2.Services
         }
 
         public async Task<List<PorudzbinaDto>> GetKupcevePorudzbine(long id)
-        {
+        {/*
+            var porudzbine = await _porudzbinaRepozitorijum.AllKupacPorudzbine(id);
+            
+            var korisnik = await _korisnikRepozitorijum.GetKorisnikById(id);
+            foreach (var porudzbina in porudzbine)
+            {
+                if (porudzbina.ElementiPorudzbine == null || porudzbina.ElementiPorudzbine.Count == 0)
+                {
+                    await _porudzbinaRepozitorijum.DeletePorudzbina(porudzbina);
+                }
+            }
+            */
             var svePorudzbineKupca = await _porudzbinaRepozitorijum.AllKupacPorudzbine(id);
 
+
             var trenutnoVreme = DateTime.Now;
+
 
             foreach (var porudzbina in svePorudzbineKupca)
             {

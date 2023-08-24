@@ -14,7 +14,7 @@ const ProdavacDashboard = ({statusVerifikacije}) => {
                         Vaš zahtjev je u procesu
                         </h2>
                         <div className="sub header" style={{ marginTop:'0px' }}>
-                            Uskoro ćete dobiti obavještenje o rezultatu validacije
+                            Uskoro ćete dobiti obavještenje o rezultatu verifikacije na Vaš email.
                         </div>
                     
                 </>
@@ -23,7 +23,7 @@ const ProdavacDashboard = ({statusVerifikacije}) => {
                 <>
                    <h2 className="ui red center aligned icon header" style={{ marginTop:'0px' }}>
                         <HighlightOffTwoToneIcon/>
-                        Vaš zahtjev je odbijen. Niste u mogućnosti da nastavite koristi naš sajt u ulozi prodavca.
+                        Vaš zahtjev je odbijen. Niste u mogućnosti da nastavite koristi naš sajt.
                     </h2> 
                 </>
             }
@@ -31,8 +31,11 @@ const ProdavacDashboard = ({statusVerifikacije}) => {
                 <>
                 <h2 className="ui green center aligned icon header"  style={{ marginTop:'0px' }}>
                         <VerifiedUserTwoToneIcon/>
-                        Uspješno ste ulogovani na naš sajt u ulozi prodavca
+                        Uspješno ste prijavljeni na naš sajt u ulozi prodavca.
                     </h2> 
+                    <div style={{ marginTop:'0px' }}>
+                        
+                    </div>
                 </>
             }
 

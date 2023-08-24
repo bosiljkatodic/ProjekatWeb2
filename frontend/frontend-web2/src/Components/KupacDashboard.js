@@ -33,6 +33,7 @@ const KupacDashboard = () => {
     type: "", //dal je pozitivna ili negativna poruka
     content: "",
   });
+  const token = sessionStorage.getItem('token')
 
   const navigate = useNavigate();
 
@@ -82,7 +83,7 @@ const handleButtonCell = (datumKreiranja, id, statusPorudzbine) => {
                             variant='contained'
                             onClick={(e) => handleOtkaziDugmeClick(e)}>
                         <i className="x icon"></i>
-                        Otkazite porudzbinu
+                        Otkažite porudžbinu
             </Button>
         </td> 
        
@@ -91,12 +92,12 @@ const handleButtonCell = (datumKreiranja, id, statusPorudzbine) => {
       if(statusPorudzbine === 'Otkazano'){
         return <td className="center aligned positive">
         <i className="icon checkmark"></i>
-        Porudzbina je otkazana
+        Porudžbina je otkazana
         </td>
       }else{
         return <td className="center aligned positive">
             <i className="icon checkmark"></i>
-            Porudzbina je prihvacena
+            Porudžbina je prihvaćena
         </td>
       }
     }
@@ -106,17 +107,16 @@ const handleButtonCell = (datumKreiranja, id, statusPorudzbine) => {
 
 const handleOtkaziDugmeClick = async (e) => {
     e.preventDefault();
-    const idKupca = e.target.id;
+    const id = e.target.id;
 
-    const response = await OtkazivanjePorudzbine(idKupca, token)
+    const response = await OtkazivanjePorudzbine(id, token)
 
     if(response !== null){
-        alert(response.message);
+        //alert("Uspješno ste otkazali porudžbinu.");
         navigate('/kupacDashboard');
     }
 
 }
-  const token = sessionStorage.getItem('token')
 
   useEffect(() => {
     const getArtikle = async () => {
@@ -129,7 +129,7 @@ const handleOtkaziDugmeClick = async (e) => {
         setLoading(false);
         setMessage({
           type: "positive",
-          content: "Dobro dosli na stranicu. Ako ste se po prvi put registrovali preko Google Account-a, molimo Vas azurirajte Vas datum rodjenja i adresu",
+          content: "Dobro došli na stranicu za online kupovinu. Prijavljeni ste u ulozi kupca.",
         });
         setShowMessage(true);
       } else{
@@ -168,9 +168,9 @@ const handleOtkaziDugmeClick = async (e) => {
     if(unetaKolicina === ""){
       setMessage({
         type: "negative",
-        content: "Morate uneti kolicinu",
+        content: "Morate unijeti količinu.",
       });
-      alert("Morate uneti kolicinu")
+      alert("Morate unijeti količinu.")
     }
     else if(unetaKolicina <= artikal.kolicina){ //ako je uneta kolicina, proveri da li je manja od dostupne
       //na ovaj nacin omogucavam korisniku da moze da obrise artikal
@@ -194,9 +194,9 @@ const handleOtkaziDugmeClick = async (e) => {
         });
         setMessage({
           type: "positive",
-          content: `Uspesno ste azurirali kolicinu artikla ${artikal.naziv}`,
+          content: `Uspješno ste ažurirali količinu artikla ${artikal.naziv}`,
         });
-        alert(`Uspesno ste azurirali kolicinu artikla ${artikal.naziv}`)
+        alert(`Uspješno ste ažurirali količinu artikla ${artikal.naziv}`)
       } else {
         //ako ne postoji onda ga dodajem
         const noviIzabraniArtikal = {
@@ -209,36 +209,21 @@ const handleOtkaziDugmeClick = async (e) => {
         setIzabraniArtikli([...izabraniArtikli, noviIzabraniArtikal]);
         setMessage({
           type: "positive",
-          content: `Uspesno ste dodali artikal ${artikal.naziv} u Vasu porudzbinu`,
+          content: `Uspješno ste dodali artikal ${artikal.naziv} u porudžbinu`,
         });
-        alert(`Uspesno ste dodali artikal ${artikal.naziv} u Vasu porudzbinu`)
+        alert(`Uspješno ste dodali artikal ${artikal.naziv} u porudžbinu`)
       }
     } else {
       setMessage({
         type: "negative",
-        content: "Nema dovoljnog broja artikala",
+        content: "Nema dovoljno dostupnih artikala",
       });
-      alert("Nema dovoljnog broja artikala")
+      alert("Nema dovoljno dostupnih artikala")
     }
   };
 
-
- 
   const handleClickIzbaciArtikal = (e) => {
-    //kad korisnik hoce da izbaci artikal iz porudzbine, tad treba ponovo da disable ovo dugme
-    //document.getElementsByName(e.target.name)[0].className = "button";
-    //const unetaKolicina = document.getElementsByName(`input ${e.target.id}`)[0].value;
 
-    /*if(unetaKolicina === ""){
-      setMessage({
-        type: "negative",
-        content: "Morate uneti kolicinu",
-      });
-      alert("Kolicina je 0")
-    }
-    else
-    {
-*/
     //parsiram name da dobijem id
     const stringId = e.target.name.split(" ");
     const idArtikal = parseInt(stringId[1]); //parsiram u int
@@ -252,18 +237,18 @@ const handleOtkaziDugmeClick = async (e) => {
       )
     );
     if(izabraniArtikli.length === 0){
-      alert(`Niste izabrali nijedan artikal.`);
+      alert(`Niste izabrali artikal.`);
     }
     else
     {
     setMessage({
       type: "positive",
-      content: `Uspesno ste izbacili artikal ${artikal.naziv} iz Vase porudzbine`,
+      content: `Uspješno ste izbacili artikal ${artikal.naziv} iz porudžbine.`,
     });
     document.getElementsByName(`input ${artikal.id}`)[0].value = "";
-    alert(`Uspesno ste izbacili artikal ${artikal.naziv} iz Vase porudzbine`);
+    alert(`Uspješno ste izbacili artikal ${artikal.naziv} iz porudžbine.`);
   }
-  //}
+  
   };
 
   const handlePoruci = () => {
@@ -276,11 +261,11 @@ const handleOtkaziDugmeClick = async (e) => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'main' }}>
       {loading && (
         <div className="loader-container">
           <div className="ui active inverted dimmer">
-            <div className="ui large text loader">Ucitavanje prodavaca</div>
+            <div className="ui large text loader">Učitavanje prodavaca</div>
           </div>
         </div>
       )}
@@ -288,14 +273,14 @@ const handleOtkaziDugmeClick = async (e) => {
         <div>
           {showMessage && (
             <div className={`ui large ${message.type} message`}>
-              <div className="ui center aligned header">{message.content}</div>
+              <div className="ui center aligned header"><h3>{message.content}</h3></div>
             </div>
           )}
            
 
         <Grid container spacing={2}>
 
-            <Grid item xs={6}>
+            <Grid item xs={5}>
            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
             
            <Typography component="h2" variant="h6" color="primary" gutterBottom>
@@ -305,10 +290,10 @@ const handleOtkaziDugmeClick = async (e) => {
             <Table size="small">
             <TableHead>
                 <TableRow>                
-                    <TableCell>Artikal</TableCell>
-                    <TableCell>Opis artikla</TableCell>
-                    <TableCell>Količina</TableCell>
-                    <TableCell>Opcije</TableCell>
+                    <TableCell><h4>Artikal</h4></TableCell>
+                    <TableCell><h4>Opis artikla</h4></TableCell>
+                    <TableCell><h4>Količina</h4></TableCell>
+                    <TableCell><h4>Opcije</h4></TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -323,7 +308,7 @@ const handleOtkaziDugmeClick = async (e) => {
                         height="100"
                       ></img>
                       <div className="content">
-                        {artikal.naziv}
+                        Naziv: {artikal.naziv}
                         <div className="sub header">Cijena artikla: {artikal.cijena} dinara</div>
                         <div className="sub header">Dostupna količina: {artikal.kolicina}</div>
                         <div className="sub header">Cijena dostave: {artikal.cijenaDostave} dinara</div>
@@ -375,22 +360,22 @@ const handleOtkaziDugmeClick = async (e) => {
        
 
 
-            <Grid item xs={6}>
+            <Grid item xs={7}>
            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
             
            <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                Moje prethodne porudzbine
+                Moje prethodne porudžbine
             </Typography>
 
             <Table size="small">
             <TableHead>
                 <TableRow>                
-                    <TableCell>Id porudzbine</TableCell>
-                    <TableCell>Artikli u porudzbini</TableCell>
-                    <TableCell>Adresa dostave</TableCell>
-                    <TableCell>Cijena porudzbine</TableCell>
-                    <TableCell>Vrijeme do isporuke</TableCell>
-                    <TableCell>Status porudzbine</TableCell>
+                    <TableCell><h4>Id porudžbine</h4></TableCell>
+                    <TableCell><h4>Artikli u porudžbini</h4></TableCell>
+                    <TableCell><h4>Adresa dostave</h4></TableCell>
+                    <TableCell><h4>Cijena porudžbine</h4></TableCell>
+                    <TableCell><h4>Vrijeme do isporuke</h4></TableCell>
+                    <TableCell><h4>Status porudžbine</h4></TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>

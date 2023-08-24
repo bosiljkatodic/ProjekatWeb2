@@ -28,5 +28,11 @@ namespace ProjekatWeb2.Repository
         {
             return await _dbContext.ElementPorudzbine.Include(x => x.Porudzbina).ToListAsync();
         }
+
+        public async Task DeleteElementiPorudzbine(long id)
+        {
+            _dbContext.ElementPorudzbine.RemoveRange(_dbContext.ElementPorudzbine.Where(x => x.IdArtikal == id));
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

@@ -2,9 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { GetArtiklePorudzbineProdavca } from '../Services/PorudzbinaService';
 import { Link, useParams } from 'react-router-dom';
 
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+ 
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import { Button, ButtonGroup } from "@mui/material";
 
-
-
+const defaultTheme = createTheme();
 
 const Detalji = ({ match }) => {
   const [artikli, setArtikli] = useState([]);
@@ -17,7 +28,7 @@ const Detalji = ({ match }) => {
   useEffect(() => {
     const get = async () => {
       try {
-        const resp = await GetArtiklePorudzbineProdavca(id, prodavacId);
+        const resp = await GetArtiklePorudzbineProdavca(id, prodavacId, sessionStorage.getItem('token'));
         console.log(resp);
         console.log(resp);
         setArtikli(resp); 
@@ -32,39 +43,55 @@ const Detalji = ({ match }) => {
 
 
   return (
-    <div className="tabela-container">
-      <h2>Moji artikli u porudzbini</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Id artikla</th>
-            <th>Naziv</th>
-            <th>Cijena</th>
-            <th>Opis</th>
-            <th>Slika</th>
-          </tr>
-        </thead>
-        <tbody>
-        {artikli.map((artikal) => (
-            <tr key={artikal.id}>
-              <td>{artikal.id}</td>
-              <td>{artikal.naziv}</td>
-              <td>{artikal.cijena}</td>
-              <td>{artikal.opis}</td>
-              <td>
-              <img
+    <ThemeProvider theme={defaultTheme}>
+                <Box sx={{ display: 'main' }}>
+
+            <Typography component="h2" variant="h6" color="primary" gutterBottom>
+             Moji artikli u porudžbini
+            </Typography>
+
+            <Table size="small">
+            <TableHead>
+                <TableRow>                
+                    <TableCell><h4>Id artikla</h4></TableCell>
+                    <TableCell><h4>Naziv</h4></TableCell>
+                    <TableCell><h4>Cijena</h4></TableCell>
+                    <TableCell><h4>Opis</h4></TableCell>
+                    <TableCell><h4>Fotografija</h4></TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {artikli.map((artikal) => (
+                <TableRow>
+                    <TableCell><h4 className="ui header">
+                    {artikal.id}
+                            </h4>
+                    </TableCell>
+                    <TableCell>
+                    {artikal.naziv}
+                                        </TableCell>
+                    <TableCell>
+                    {artikal.cijena} dinara
+                    </TableCell>
+                    <TableCell>
+                    {artikal.opis}
+                    </TableCell>
+                    <TableCell>
+                    <img
                         className="ui big image"
                         src={artikal.fotografija}
                         width="200"
                         height="100"
                       ></img>
-          </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <Link to ="/prodavacDashboard"> Nazad </Link>
-    </div>
+                                          </TableCell>
+
+                    </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </Box>
+        </ThemeProvider>
+    
   );
 };
 
