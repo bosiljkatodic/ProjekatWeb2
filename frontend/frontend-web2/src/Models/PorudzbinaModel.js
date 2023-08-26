@@ -11,7 +11,7 @@ export default class PorudzbinaModel {
         this.korisnikId = data.korisnikId;
         this.elementiPorudzbine = [];
     }
-//???
+
     addAllArtiklePorudzbine(elementiPorudzbine){
         for(var i = 0; i < elementiPorudzbine.length; i++){
             this.elementiPorudzbine.push(elementiPorudzbine[i]);
